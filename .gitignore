@@ -1,0 +1,10 @@
+/.settings
+/.project
+/.buildpath
+/composer.phar
+/vendor
+phpunit.xml
+.vagrant
+Vagrantfile
+.idea
+nbproject
