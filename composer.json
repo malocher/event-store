@@ -30,7 +30,8 @@
     },
     "autoload": {
         "psr-0": { 
-            "Malocher\\EventStore\\": "src/" 
+            "Malocher\\EventStore\\": "src/",
+            "Malocher\\EventStoreTest\\": "tests/"
         }
     }
 }
