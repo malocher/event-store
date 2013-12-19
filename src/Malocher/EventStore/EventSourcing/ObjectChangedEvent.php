@@ -10,11 +10,11 @@ namespace Malocher\EventStore\EventSourcing;
 
 use Malocher\Cqrs\Message\Message;
 /**
- * SourceEvent
+ * ObjectChangedEvent
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class SourceEvent extends Message implements EventInterface
+class ObjectChangedEvent extends Message implements EventInterface
 {
     protected $sourceId;
     protected $sourceVersion = 1;

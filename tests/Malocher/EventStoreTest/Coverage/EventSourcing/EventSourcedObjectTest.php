@@ -15,24 +15,24 @@ use Malocher\EventStoreTest\Coverage\TestCase;
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class AbstractEventSourcedTest extends TestCase
+class EventSourcedObjectTest extends TestCase
 {
     /**
      *
      * @var User
      */
-    protected $user;
+    protected $eventSourcedObject;
     
     protected function setUp() 
     {
-        $this->user = new User(1);
+        $this->eventSourcedObject = new User(1);
     }
     
     public function testGetPendingEvents()
     {
-        $this->user->changeName('Malocher');
+        $this->eventSourcedObject->changeName('Malocher');
         
-        $events = $this->user->getPendingEvents();
+        $events = $this->eventSourcedObject->getPendingEvents();
         
         $this->assertEquals(1, count($events));
         
@@ -43,13 +43,13 @@ class AbstractEventSourcedTest extends TestCase
         $this->assertEquals('Malocher', $userNameChangedEvent->getPayload()['newName']);
         
         //Pending events should be reset after requesting them
-        $this->assertEquals(0, count($this->user->getPendingEvents()));
+        $this->assertEquals(0, count($this->eventSourcedObject->getPendingEvents()));
     }
     
     public function testRegisterHandlers()
     {
-        $this->user->changeEmail('my.email@getmalocher.org');
+        $this->eventSourcedObject->changeEmail('my.email@getmalocher.org');
         
-        $this->assertEquals('my.email@getmalocher.org', $this->user->getEmail());
+        $this->assertEquals('my.email@getmalocher.org', $this->eventSourcedObject->getEmail());
     }
 }

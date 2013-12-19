@@ -8,13 +8,13 @@
  */
 namespace Malocher\EventStoreTest\Coverage\Mock;
 
-use Malocher\EventStore\EventSourcing\AbstractEventSourced;
+use Malocher\EventStore\EventSourcing\EventSourcedObject;
 /**
  * User AggregateRoot used as Mock for AbstractEventSourced
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class User extends AbstractEventSourced
+class User extends EventSourcedObject
 {
     protected $name;
     

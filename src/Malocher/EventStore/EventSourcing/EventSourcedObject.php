@@ -9,11 +9,11 @@
 namespace Malocher\EventStore\EventSourcing;
 
 /**
- *  AbstractEventSourced
+ * EventSourcedObject
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class AbstractEventSourced implements EventSourcedInterface
+class EventSourcedObject implements EventSourcedInterface
 {
     /**
      * Identifier
