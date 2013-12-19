@@ -5,6 +5,7 @@ It depends on components of the [malocher\cqrs-esb](https://github.com/malocher/
 but do not require a CQRS sytem to be used. However, both systems can be linked very easy.
 
 [![Build Status](https://travis-ci.org/malocher/event-store.png?branch=master)](https://travis-ci.org/malocher/event-store)
+[![Coverage Status](https://coveralls.io/repos/malocher/event-store/badge.png?branch=master)](https://coveralls.io/r/malocher/event-store?branch=master)
 
 ## Installation
 
