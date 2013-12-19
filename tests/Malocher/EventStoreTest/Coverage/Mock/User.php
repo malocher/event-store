@@ -44,6 +44,11 @@ class User extends EventSourcedObject
         );
     }
     
+    public function getSourceVersion()
+    {
+        return $this->version;
+    }
+    
     protected function registerHandlers() 
     {
         $this->handlers['UserNameChangedEvent'] = 'onNameChanged';

@@ -53,7 +53,9 @@ class EventSourcedObject implements EventSourcedInterface
      */
     public function __construct($id, array $historyEvents = null)
     {
-        $this->id = $id;        
+        $this->id = $id;   
+        
+        $this->handlers['SnapshotEvent'] = 'onSnapshot';
         $this->registerHandlers(); 
         
         if (is_array($historyEvents)) {
@@ -93,7 +95,15 @@ class EventSourcedObject implements EventSourcedInterface
     public function getSnapshot()
     {
         $payload = $this->getSnapshotPayload();
-        //@todo: implement this
+        
+        $snapshotEvent = new SnapshotEvent($payload);
+        $snapshotEvent->setSourceId($this->getId());
+        
+        $this->version += 1;
+        
+        $snapshotEvent->setSourceVersion($this->version);
+        
+        return $snapshotEvent;
     }
     
     /**
@@ -121,7 +131,7 @@ class EventSourcedObject implements EventSourcedInterface
             
             $this->{$handler}($pastEvent);
             
-            $this->version = $pastEvent->getVersion();
+            $this->version = $pastEvent->getSourceVersion();
         }
     }
     
@@ -170,5 +180,16 @@ class EventSourcedObject implements EventSourcedInterface
         unset($vars['pendingEvents']);
         
         return $vars;
+    }
+    
+    protected function onSnapshot(SnapshotEvent $e)
+    {
+        $vars = $e->getPayload();
+        
+        foreach ($vars as $property => $value) {
+            $this->{$property} = $value;
+        }
+        
+        $this->version = $e->getSourceVersion();
     }
 }
