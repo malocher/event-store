@@ -7,20 +7,18 @@
  * file that was distributed with this source code.
  */
 namespace Malocher\EventStoreTest\Coverage\EventSourcing;
-
 use Malocher\EventStoreTest\Coverage\Mock\User;
-use Malocher\EventStoreTest\Coverage\TestCase;
+use Malocher\EventStoreTest\TestCase;
+
 /**
  * AbstractEventSourcedTest
- * 
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ *
+ * @author Manfred Weber <crafics@php.net>
+ * @package Malocher\EventStoreTest\Coverage\EventSourcing
  */
 class AbstractEventSourcedTest extends TestCase
 {
-    /**
-     *
-     * @var User
-     */
+    /*
     protected $user;
     
     protected function setUp() 
@@ -52,4 +50,6 @@ class AbstractEventSourcedTest extends TestCase
         
         $this->assertEquals('my.email@getmalocher.org', $this->user->getEmail());
     }
+    */
+
 }
