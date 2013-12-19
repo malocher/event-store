@@ -8,5 +8,5 @@ before_script:
   - composer update
 
 script:
-  - php vendor/bin/phpunit -c
+  - php vendor/bin/phpunit
 
