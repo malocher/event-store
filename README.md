@@ -4,6 +4,8 @@ The Malocher EventStore provides infrastructure to use Event Sourcing as storage
 It depends on components of the [malocher\cqrs-esb](https://github.com/malocher/cqrs-esb) library, 
 but do not require a CQRS sytem to be used. However, both systems can be linked very easy.
 
+[![Build Status](https://travis-ci.org/malocher/event-store.png?branch=master)](https://travis-ci.org/malocher/event-store)
+
 ## Installation
 
 Installation of malocher\event-store uses composer. For composer documentation, please refer to
