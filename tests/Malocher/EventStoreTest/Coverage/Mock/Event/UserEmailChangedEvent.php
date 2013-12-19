@@ -8,13 +8,13 @@
  */
 namespace Malocher\EventStoreTest\Coverage\Mock\Event;
 
-use Malocher\EventStore\EventSourcing\SourceEvent;
+use Malocher\EventStore\EventSourcing\ObjectChangedEvent;
 /**
  * ChangeUserNameEvent
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  * @package Malocher\EventStoreTest\Coverage\Mock\Event
  */
-class UserEmailChangedEvent extends SourceEvent
+class UserEmailChangedEvent extends ObjectChangedEvent
 {
 }

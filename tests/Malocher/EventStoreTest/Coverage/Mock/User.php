@@ -8,14 +8,14 @@
  */
 namespace Malocher\EventStoreTest\Coverage\Mock;
 
-use Malocher\EventStore\EventSourcing\AbstractEventSourced;
+use Malocher\EventStore\EventSourcing\EventSourcedObject;
 /**
  * User AggregateRoot used as Mock for AbstractEventSourced
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  * @package Malocher\EventStoreTest\Coverage\Mock
  */
-class User extends AbstractEventSourced
+class User extends EventSourcedObject
 {
     protected $name;
     
@@ -43,6 +43,11 @@ class User extends AbstractEventSourced
         $this->update(
             new Event\UserEmailChangedEvent(array('oldEmail' => $this->email, 'newEmail' => $newEmail))
         );
+    }
+    
+    public function getSourceVersion()
+    {
+        return $this->version;
     }
     
     protected function registerHandlers() 
