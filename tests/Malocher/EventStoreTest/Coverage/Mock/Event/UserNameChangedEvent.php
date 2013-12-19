@@ -13,6 +13,7 @@ use Malocher\EventStore\EventSourcing\ObjectChangedEvent;
  * ChangeUserNameEvent
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStoreTest\Coverage\Mock\Event
  */
 class UserNameChangedEvent extends ObjectChangedEvent
 {

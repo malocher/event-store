@@ -6,12 +6,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Malocher\EventStoreTest\Coverage\EventSourcing;
+namespace Malocher\EventStoreTest\Coverage\EventStore\EventSourcing;
 
 use Malocher\EventStoreTest\Coverage\Mock\User;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserNameChangedEvent;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserEmailChangedEvent;
-use Malocher\EventStoreTest\Coverage\TestCase;
+use Malocher\EventStoreTest\TestCase;
+
 /**
  * AbstractEventSourcedTest
  * 

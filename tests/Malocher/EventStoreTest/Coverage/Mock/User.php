@@ -13,6 +13,7 @@ use Malocher\EventStore\EventSourcing\EventSourcedObject;
  * User AggregateRoot used as Mock for AbstractEventSourced
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStoreTest\Coverage\Mock
  */
 class User extends EventSourcedObject
 {
