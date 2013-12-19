@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Coverage">
+            <directory>./tests/Malocher/EventStoreTest/Coverage/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

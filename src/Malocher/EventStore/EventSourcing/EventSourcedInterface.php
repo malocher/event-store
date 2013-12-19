@@ -16,14 +16,6 @@ namespace Malocher\EventStore\EventSourcing;
 interface EventSourcedInterface
 {
     /**
-     * Construct
-     * 
-     * @param string           $id
-     * @param EventInterface[] $historyEvents
-     */
-    public function __construct($id, array $historyEvents = null);
-    
-    /**
      * Get non commited events
      * 
      * @return EventInterface[]

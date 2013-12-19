@@ -49,6 +49,6 @@ class EventStoreConfiguration
             return (int)$this->config['snapshot_interval'];
         }
         
-        return 20;
+        return 0;
     }
 }

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ccb6265b6a75cf4def26844fff8e5e5d",
+    "hash": "cca702d9ae7b1ae1dd57fba2f6e3f96c",
     "packages": [
         {
             "name": "malocher/cqrs-esb",

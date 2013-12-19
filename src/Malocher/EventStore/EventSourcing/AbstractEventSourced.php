@@ -137,7 +137,8 @@ class AbstractEventSourced implements EventSourcedInterface
         
         $e->setSourceId($this->getId());
         $this->version += 1;
-        $e->setVersion($this->version);
+        $e->setSourceVersion($this->version);
+        $this->pendingEvents[] = $e;
     }
     
     /**
@@ -149,7 +150,7 @@ class AbstractEventSourced implements EventSourcedInterface
      */
     protected function determineEventName(EventInterface $e)
     {
-        return get_class($e);
+        return join('', array_slice(explode('\\', get_class($e)), -1));
     }
 
     /**
