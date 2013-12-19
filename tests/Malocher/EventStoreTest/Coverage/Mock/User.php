@@ -40,7 +40,7 @@ class User extends AbstractEventSourced
     public function changeEmail($newEmail)
     {
         $this->update(
-            new UserEmailChangedEvent(array('oldEmail' => $this->email, 'newEmail' => $newEmail))
+            new Event\UserEmailChangedEvent(array('oldEmail' => $this->email, 'newEmail' => $newEmail))
         );
     }
     

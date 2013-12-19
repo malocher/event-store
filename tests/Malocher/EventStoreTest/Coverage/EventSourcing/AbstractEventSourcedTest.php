@@ -28,7 +28,7 @@ class AbstractEventSourcedTest extends TestCase
         $this->user = new User(1);
     }
     
-    public function testRegisterHandlers()
+    public function testGetPendingEvents()
     {
         $this->user->changeName('Malocher');
         
@@ -44,5 +44,12 @@ class AbstractEventSourcedTest extends TestCase
         
         //Pending events should be reset after requesting them
         $this->assertEquals(0, count($this->user->getPendingEvents()));
+    }
+    
+    public function testRegisterHandlers()
+    {
+        $this->user->changeEmail('my.email@getmalocher.org');
+        
+        $this->assertEquals('my.email@getmalocher.org', $this->user->getEmail());
     }
 }
