@@ -11,7 +11,8 @@ namespace Malocher\EventStoreTest\Coverage\EventSourcing;
 use Malocher\EventStoreTest\Coverage\Mock\User;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserNameChangedEvent;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserEmailChangedEvent;
-use Malocher\EventStoreTest\Coverage\TestCase;
+use Malocher\EventStoreTest\TestCase;
+
 /**
  * AbstractEventSourcedTest
  * 

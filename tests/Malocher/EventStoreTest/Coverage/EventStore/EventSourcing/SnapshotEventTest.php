@@ -9,13 +9,14 @@
 namespace Malocher\EventStoreTest\EventSourcing;
 
 use Malocher\Cqrs\Message\Message;
+
 /**
  * SnapshotEvent
  *
  * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStoreTest\EventSourcing
  */
-class SnapshotEventTest extends Message implements EventInterface
+class SnapshotEventTest extends Message
 {
     /*
     protected $sourceId;

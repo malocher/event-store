@@ -9,7 +9,6 @@
 namespace Malocher\EventStoreTest\EventSourcing;
 
 use Malocher\Cqrs\Message\Message;
-use Malocher\EventStore\EventSourcing\EventInterface;
 
 /**
  * SourceEvent
@@ -17,7 +16,7 @@ use Malocher\EventStore\EventSourcing\EventInterface;
  * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStoreTest\EventSourcing
  */
-class SourceEventTest extends Message implements EventInterface
+class SourceEventTest extends Message
 {
     /*
     protected $sourceId;
