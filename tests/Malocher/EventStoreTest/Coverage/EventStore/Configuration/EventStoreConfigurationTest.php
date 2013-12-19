@@ -17,9 +17,9 @@ use Malocher\EventStoreTest\TestCase;
  * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStoreTest\Configuration
  */
+/*
 class EventStoreConfigurationTest extends TestCase
 {
-    /*
     protected $config = array();
     
     public function __construct(array $config = null)
@@ -47,5 +47,5 @@ class EventStoreConfigurationTest extends TestCase
         
         return 0;
     }
-    */
 }
+*/

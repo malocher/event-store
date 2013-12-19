@@ -16,6 +16,7 @@ use Malocher\EventStore\EventSourcing\SnapshotEvent;
  * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStoreTest\Adapter
  */
+/*
 class AdapterInterfaceTest
 {
     //public function loadStream($sourceType, $sourceId, $version = null);
@@ -26,3 +27,4 @@ class AdapterInterfaceTest
     
     //public function getCurrentSnapshotVersion($sourceType, $sourceId);
 }
+*/

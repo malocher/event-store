@@ -14,6 +14,7 @@ namespace Malocher\EventStoreTest\EventSourcing;
  * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStoreTest\EventSourcing
  */
+/*
 interface EventSourcedInterfaceTest
 {
     //public function getPendingEvents();
@@ -22,3 +23,4 @@ interface EventSourcedInterfaceTest
     
     //public function getSnapshot();
 }
+*/

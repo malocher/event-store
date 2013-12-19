@@ -14,6 +14,7 @@ use Malocher\Cqrs\Event\EventInterface as CqrsEvent;
  * Interface EventInterfaceTest
  * @package Malocher\EventStoreTest\EventSourcing
  */
+/*
 interface EventInterfaceTest extends CqrsEvent
 {
     //public function setSourceId($sourceId);
@@ -24,3 +25,4 @@ interface EventInterfaceTest extends CqrsEvent
     
     //public function getSourceVersion();
 }
+*/

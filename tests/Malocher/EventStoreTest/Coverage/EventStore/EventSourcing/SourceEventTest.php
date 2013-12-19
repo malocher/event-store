@@ -16,9 +16,9 @@ use Malocher\Cqrs\Message\Message;
  * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStoreTest\EventSourcing
  */
+/*
 class SourceEventTest extends Message
 {
-    /*
     protected $sourceId;
     protected $sourceVersion = 1;
 
@@ -41,6 +41,6 @@ class SourceEventTest extends Message
     {
         return $this->sourceVersion;
     }
-    */
 
 }
+*/
