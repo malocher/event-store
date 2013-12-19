@@ -15,7 +15,7 @@ use Malocher\EventStore\EventSourcing\SnapshotEvent;
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class AdapterInterface
+interface AdapterInterface
 {
     /**
      * Load EventStream of an EventSourced object from given version on
@@ -26,7 +26,7 @@ class AdapterInterface
      * @param string $sourceId
      * @param float  $version
      * 
-     * @return EventInterface
+     * @return EventInterface[]
      */
     public function loadStream($sourceType, $sourceId, $version = null);
     

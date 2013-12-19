@@ -21,7 +21,9 @@ class EventStore
      *
      * @var AdapterInterface 
      */
-    protected $adapter;
+    protected $adapter;    
+    
+    protected $identityMap = array();
     protected $snapshotInterval;
 
 

@@ -23,7 +23,9 @@
         "library"
     ],
     "require": {
-        "malocher/cqrs-esb": "1.*"
+        "malocher/cqrs-esb": "1.*",
+        "doctrine/dbal": "2.4.*",
+        "jms/serializer": "0.14.*"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
