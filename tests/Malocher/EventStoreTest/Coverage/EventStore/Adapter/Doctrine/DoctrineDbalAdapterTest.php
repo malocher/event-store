@@ -12,6 +12,7 @@ use Malocher\EventStoreTest\TestCase;
 use Malocher\EventStore\Adapter\Doctrine\DoctrineDbalAdapter;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserNameChangedEvent;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserEmailChangedEvent;
+use Malocher\EventStore\EventSourcing\SnapshotEvent;
 /**
  * DoctrineDbalAdapterTest
  * 
@@ -51,5 +52,32 @@ class DoctrineDbalAdapterTest extends TestCase
         $this->assertEquals(array($userNameChangedEvent, $userEmailChangedEvent), $stream);
     }
     
-    
+    public function testCreateSnapshotAndGetCurrentSnapshotVersion()
+    {
+        $this->assertEquals(0, $this->doctrineDbalAdapter->getCurrentSnapshotVersion('User', '1'));
+        
+        $yesterdayTimestamp = time() - 86400;
+        $userNameChangedEvent = new UserNameChangedEvent(array('name' => 'Malocher'), '100', $yesterdayTimestamp, 2.0);
+        $userNameChangedEvent->setSourceId('1');
+        $userNameChangedEvent->setSourceVersion(1);
+        
+        $userEmailChangedEvent = new UserEmailChangedEvent(array('email' => 'my.mail@getmalocher.org'), '101', $yesterdayTimestamp, 2.0);
+        $userEmailChangedEvent->setSourceId('1');
+        $userEmailChangedEvent->setSourceVersion(2);
+        
+        $this->doctrineDbalAdapter->addToStream('User', '1', array($userNameChangedEvent, $userEmailChangedEvent));
+        
+        $snapshotEvent = new SnapshotEvent(array('name' => 'Malocher', 'email' => 'my.mail@getmalocher.org'), '102', $yesterdayTimestamp, 2.0);
+        $snapshotEvent->setSourceId('1');
+        $snapshotEvent->setSourceVersion(3);
+        
+        $this->doctrineDbalAdapter->createSnapshot('User', '1', $snapshotEvent);
+        
+        $this->assertEquals(3, $this->doctrineDbalAdapter->getCurrentSnapshotVersion('User', '1'));
+        
+        $this->assertEquals(
+            array($userNameChangedEvent, $userEmailChangedEvent, $snapshotEvent), 
+            $this->doctrineDbalAdapter->loadStream('User', '1')
+        );
+    }
 }
