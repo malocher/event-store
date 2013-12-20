@@ -8,6 +8,7 @@
  */
 namespace Malocher\EventStoreTest\Coverage\EventStore\EventSourcing;
 
+use Malocher\EventStoreTest\Coverage\Mock\EmptyEventSourcedObject;
 use Malocher\EventStoreTest\Coverage\Mock\User;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserNameChangedEvent;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserEmailChangedEvent;
@@ -30,7 +31,12 @@ class EventSourcedObjectTest extends TestCase
     {
         $this->eventSourcedObject = new User(1);
     }
-    
+
+    public function testGetId()
+    {
+        $this->assertEquals( 1, $this->eventSourcedObject->getId() );
+    }
+
     public function testGetPendingEvents()
     {
         $this->eventSourcedObject->changeName('Malocher');
@@ -48,12 +54,19 @@ class EventSourcedObjectTest extends TestCase
         //Pending events should be reset after requesting them
         $this->assertEquals(0, count($this->eventSourcedObject->getPendingEvents()));
     }
-    
+
     public function testRegisterHandlers()
     {
         $this->eventSourcedObject->changeEmail('my.email@getmalocher.org');
-        
+
         $this->assertEquals('my.email@getmalocher.org', $this->eventSourcedObject->getEmail());
+    }
+
+    public function testRegisterMissingHandlers()
+    {
+        $this->setExpectedException('Malocher\EventStore\EventSourcing\EventSourcingException');
+        $emptyEventSourcedObject = new EmptyEventSourcedObject(1);
+        $emptyEventSourcedObject->changeProp1('prop1_changed');
     }
     
     public function testConstructWithHistoryEvents()
