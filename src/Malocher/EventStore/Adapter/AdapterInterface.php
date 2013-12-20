@@ -24,37 +24,43 @@ interface AdapterInterface
      *
      * Pass null as version to get the complete stream
      *
-     * @param string $sourceType
+     * @param string $sourceFQCN
      * @param string $sourceId
      * @param float  $version
      *
      * @return EventInterface[]
      */
-    public function loadStream($sourceType, $sourceId, $version = null);
+    public function loadStream($sourceFQCN, $sourceId, $version = null);
     
     /**
      * Add events to the source stream
      * 
-     * @param string           $sourceType
+     * @param string           $sourceFQCN
      * @param string           $sourceId
      * @param EventInterface[] $events
      * 
      * @return void
      */
-    public function addToStream($sourceType, $sourceId, $events);
+    public function addToStream($sourceFQCN, $sourceId, $events);
     
     /**
      * Add snapshot to stream and create reference to the version of the snapshot
+     * 
+     * @param string        $sourceFQCN
+     * @param string        $sourceId
+     * @param SnapshotEvent $event
+     * 
+     * @return void
      */
-    public function createSnapshot($sourceType, $sourceId, SnapshotEvent $event);
+    public function createSnapshot($sourceFQCN, $sourceId, SnapshotEvent $event);
     
     /**
      * Get the current snapshot version of given source
      * 
-     * @param $sourceType
-     * @param $sourceId
+     * @param string $sourceFQCN
+     * @param string $sourceId
      * 
-     * @return mixed
+     * @return integer
      */
-    public function getCurrentSnapshotVersion($sourceType, $sourceId);
+    public function getCurrentSnapshotVersion($sourceFQCN, $sourceId);
 }

@@ -9,6 +9,7 @@
 namespace Malocher\EventStoreTest\Coverage\EventStore;
 
 use Malocher\EventStore\Configuration\Configuration;
+use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Malocher\EventStore\EventStore;
 use Malocher\EventStoreTest\TestCase;
 
@@ -64,7 +65,8 @@ class EventStoreTest extends TestCase
     
     public function testIdentityMap()
     {
-        $user = new User('1');
+        $factory = new EventSourcedObjectFactory();
+        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
         
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');
@@ -76,5 +78,23 @@ class EventStoreTest extends TestCase
         $checkUser = $this->eventStore->find($userFQCN, '1');
         
         $this->assertSame($user, $checkUser);
+    }
+    
+    public function testGetRepository()
+    {
+        $repo = $this->eventStore->getRepository(
+            'Malocher\EventStoreTest\Coverage\Mock\User'
+        );
+        
+        $this->assertInstanceOf(
+            'Malocher\EventStore\Repository\EventSourcingRepository',
+            $repo
+        );
+        
+        $sameRepo = $this->eventStore->getRepository(
+            'Malocher\EventStoreTest\Coverage\Mock\User'
+        );
+        
+        $this->assertSame($repo, $sameRepo);
     }
 }

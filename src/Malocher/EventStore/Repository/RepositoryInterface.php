@@ -23,7 +23,7 @@ interface RepositoryInterface
      * @param EventStore $eventStore
      * @param string     $sourceObjectType
      */
-    public function __construct(EventStore $eventStore, $sourceObjectType);
+    public function __construct(EventStore $eventStore, $sourceFQCN);
     
     /**
      * Load an EventSourcedObject by it's id

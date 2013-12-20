@@ -96,6 +96,16 @@ class Configuration
     }
     
     /**
+     * Get map of $sourceFQCNs to $repositoryFQCNs
+     * 
+     * @return array
+     */
+    public function getRepositoryMap()
+    {
+        return (isset($this->config['repository_map']))? $this->config['repository_map'] : array();
+    }
+    
+    /**
      * 
      * @return EventSourcedObjectFactory
      */

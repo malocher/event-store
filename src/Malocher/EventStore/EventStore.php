@@ -12,6 +12,7 @@ use Malocher\EventStore\Adapter\AdapterInterface;
 use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventSourcing\EventSourcedInterface;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
+use Malocher\EventStore\Repository\RepositoryInterface;
 /**
  * EventStore 
  * 
@@ -63,6 +64,13 @@ class EventStore
     protected $sourceTypeClassMap = array();
     
     /**
+     * Map of $sourceFQCNs to $repositoryFQCNs
+     * 
+     * @var array 
+     */
+    protected $repositoryMap = array();
+
+    /**
      *
      * @var EventSourcedObjectFactory 
      */
@@ -87,9 +95,40 @@ class EventStore
         }
     }
 
+    /**
+     * Get the active EventStoreAdapter
+     * 
+     * @return AdapterInterface
+     */
     public function getAdapter()
     {
         return $this->adapter;
+    }
+    
+    /**
+     * Get responsible repository for given source FQCN
+     * 
+     * @param string $sourceFQCN
+     * 
+     * @return RepositoryInterface
+     */
+    public function getRepository($sourceFQCN)
+    {
+        $hash = 'repository::' . $sourceFQCN;
+        
+        if (isset($this->identityMap[$hash])) {
+            return $this->identityMap[$hash];
+        }
+        
+        $repositoryFQCN = (isset($this->repositoryMap[$sourceFQCN]))?
+            $this->repositoryMap[$sourceFQCN] 
+            : 'Malocher\EventStore\Repository\EventSourcingRepository';
+        
+        $repository = new $repositoryFQCN($this, $sourceFQCN);
+        
+        $this->identityMap[$hash] = $repository;
+        
+        return $repository;
     }
 
     /**
