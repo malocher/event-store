@@ -58,14 +58,7 @@ class EventStore
      * @var integer 
      */
     protected $snapshotInterval;
-    
-    /**
-     * A map of short sourceTypes and their corresponding FQCNs
-     * 
-     * @var type 
-     */
-    protected $sourceTypeClassMap = array();
-    
+           
     /**
      * Map of $sourceFQCNs to $repositoryFQCNs
      * 
@@ -95,7 +88,6 @@ class EventStore
         $this->lookupSnapshots = $config->isSnapshotLookup();
         $this->autoGenerateSnapshots = $config->isAutoGenerateSnapshots();
         $this->snapshotInterval = $config->getSnapshotInterval();
-        $this->sourceTypeClassMap = $config->getSourceTypeClassMap();
         $this->objectFactory = $config->getObjectFactory();
         $this->eventDispatcher = $config->getEventDispatcher();
         

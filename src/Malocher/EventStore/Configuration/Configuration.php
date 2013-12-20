@@ -90,16 +90,6 @@ class Configuration
     }
     
     /**
-     * Map of short sourcceTypes and their corresponding FQCNs
-     * 
-     * @return array
-     */
-    public function getSourceTypeClassMap()
-    {
-        return (isset($this->config['source_type_class_map']))? $this->config['source_type_class_map'] : array();
-    }
-    
-    /**
      * Get map of $sourceFQCNs to $repositoryFQCNs
      * 
      * @return array
