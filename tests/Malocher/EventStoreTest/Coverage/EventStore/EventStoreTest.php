@@ -8,7 +8,7 @@
  */
 namespace Malocher\EventStoreTest\Coverage\EventStore;
 
-use Malocher\EventStore\Configuration\EventStoreConfiguration;
+use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventStore;
 use Malocher\EventStoreTest\TestCase;
 
@@ -31,7 +31,7 @@ class EventStoreTest extends TestCase
             'adapter' => '',
             'snapshot_interval' => '',
         );
-        $eventStoreConfiguration = new EventStoreConfiguration($config);
+        $eventStoreConfiguration = new Configuration($config);
         $this->eventStore = new EventStore($eventStoreConfiguration);
     }
 
