@@ -37,7 +37,6 @@ $commands = array();
 
 $config = require $configFile;
 
-
 $helperSet = new HelperSet(array(
     'es' => new EventStoreHelper(
         new EventStore(new Configuration($config))

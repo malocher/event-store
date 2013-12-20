@@ -39,7 +39,6 @@ class Configuration
     {
         if (is_null($this->adapter)) {
             $adapterConfig = $this->config['adapter'];
-
             foreach ($adapterConfig as $adapterClass => $adapterConfig) {
                 $this->adapter = new $adapterClass($adapterConfig);
             }

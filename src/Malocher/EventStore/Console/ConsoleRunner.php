@@ -8,16 +8,18 @@
  */
 namespace Malocher\EventStore\Console;
 
-use Malocher\EventStore\Console\Command\GreetCommand;
-use Malocher\EventStore\Console\Command\InfoCommand;
+use Malocher\EventStore\Console\Command\SchemaInfoCommand;
+use Malocher\EventStore\Console\Command\SchemaInstallCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 
 class ConsoleRunner
 {
+    const VERSION = 0.1;
+
     static public function run(HelperSet $helperSet, $commands = array())
     {
-        $cli = new \Symfony\Component\Console\Application('Malocher EventStore Command Line Interface', 1.0);
+        $cli = new \Symfony\Component\Console\Application('Malocher EventStore Command Line Interface', self::VERSION);
 
         $cli->setHelperSet($helperSet);
         $cli->setCatchExceptions(true);
@@ -29,8 +31,8 @@ class ConsoleRunner
     static public function addCommands(Application $cli)
     {
         $cli->addCommands(array(
-            new GreetCommand(),
-            new InfoCommand()
+            new SchemaInfoCommand(),
+            new SchemaInstallCommand()
         ));
     }
 }

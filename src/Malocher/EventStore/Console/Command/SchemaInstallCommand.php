@@ -8,27 +8,30 @@
  */
 namespace Malocher\EventStore\Console\Command;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class InfoCommand extends Command
+/**
+ * Class SchemaInstallCommand
+ * @package Malocher\EventStore\Console\Command
+ */
+class SchemaInstallCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('es:info')
-            ->setDescription('display basic information')
-            ->setHelp(<<<EOT
-the <info>%command.name%</info> shows basic information.
-EOT
-            );
+            ->setName('schema:install')
+            ->setDescription('Install EventStore schemas')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-        $output->writeln($input->getFirstArgument());
-        return false;
+        $evenStore = $this->getHelper('es')->getEventStore();
+        $adapter = $evenStore->getAdapter();
+        $output->writeln("<info>".$adapter->install()."</info>");
     }
 }

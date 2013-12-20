@@ -51,6 +51,10 @@ class GreetCommand extends Command
         */
 
         $evenStore = $this->getHelper('es')->getEventStore();
+        $adapter = $evenStore->getAdapter();
+        //var_dump($evenStore);
+        var_dump($adapter);
+
 
         /*
         if ($input->getOption('yell')) {
@@ -58,7 +62,7 @@ class GreetCommand extends Command
         }
         */
 
-        $evenStore->executeCommand($this->getName(),$input->getArguments());
+        //$evenStore->executeCommand($this->getName(),$input->getArguments());
 
         //$output->writeln("<error>Something went wrong</error>");
         //$output->writeln("<info>Some information</info>");
