@@ -6,17 +6,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Malocher\EventStore\Adapter;
+namespace Malocher\EventStore\EventSourcing;
 
 /**
- * AdapterException
+ * EventSourcedObjectFactory
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class AdapterException extends \Exception
+class EventSourcedObjectFactory 
 {
-    public static function configurationException($msg)
-    {
-        return new self('[Adapter Configuration Error] ' . $msg . "\n");
-    }
+    
 }
