@@ -10,11 +10,11 @@ namespace Malocher\EventStore\Configuration;
 
 use Malocher\EventStore\Adapter\AdapterInterface;
 /**
- *  EventStoreConfiguration
+ *  Configuration
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class EventStoreConfiguration
+class Configuration
 {
     protected $config = array();
     

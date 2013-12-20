@@ -9,7 +9,7 @@
 namespace Malocher\EventStore;
 
 use Malocher\EventStore\Adapter\AdapterInterface;
-use Malocher\EventStore\Configuration\EventStoreConfiguration;
+use Malocher\EventStore\Configuration\Configuration;
 /**
  * EventStore 
  * 
@@ -27,7 +27,7 @@ class EventStore
     protected $snapshotInterval;
 
 
-    public function __construct(EventStoreConfiguration $config)
+    public function __construct(Configuration $config)
     {
         $this->adapter = $config->getAdapter();
         $this->snapshotInterval = $config->getSnapshotInterval();
