@@ -59,7 +59,7 @@ class EventSourcedObject implements EventSourcedInterface
         $this->registerHandlers(); 
         
         if (is_array($historyEvents)) {
-            $this->loadHistory($historyEvents);
+            $this->replay($historyEvents);
         }
     }
 
@@ -124,7 +124,7 @@ class EventSourcedObject implements EventSourcedInterface
      * 
      * @return void
      */
-    protected function loadHistory(array $historyEvents)
+    protected function replay(array $historyEvents)
     {
         foreach ($historyEvents as $pastEvent) {
             $handler = $this->handlers[$this->determineEventName($pastEvent)];
