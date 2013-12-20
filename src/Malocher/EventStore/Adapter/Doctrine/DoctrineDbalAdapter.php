@@ -20,6 +20,8 @@ use JMS\Serializer\SerializerBuilder;
  * DoctrineAdapter
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Manfred Weber <crafics@php.net>
+ * @package Malocher\EventStore\Adapter\Doctrine
  */
 class DoctrineDbalAdapter implements AdapterInterface
 {
@@ -255,8 +257,7 @@ class DoctrineDbalAdapter implements AdapterInterface
     /**
      * Get tablename for given sourceType
      * 
-     * @param string $sourceType
-     * 
+     * @param $sourceFQCN
      * @return string
      */
     protected function getTable($sourceFQCN)
@@ -269,7 +270,11 @@ class DoctrineDbalAdapter implements AdapterInterface
         
         return $tableName;
     }
-    
+
+    /**
+     * @param $sourceFQCN
+     * @return string
+     */
     protected function getShortSourceType($sourceFQCN)
     {
         return join('', array_slice(explode('\\', $sourceFQCN), -1));

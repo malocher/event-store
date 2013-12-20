@@ -12,6 +12,7 @@ namespace Malocher\EventStore\EventSourcing;
  * Default EventSourcedObjectFactory
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\EventSourcing
  */
 class EventSourcedObjectFactory 
 {

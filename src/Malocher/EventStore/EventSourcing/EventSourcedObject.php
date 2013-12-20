@@ -12,6 +12,7 @@ namespace Malocher\EventStore\EventSourcing;
  * EventSourcedObject
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\EventSourcing
  */
 class EventSourcedObject implements EventSourcedInterface
 {
@@ -182,7 +183,10 @@ class EventSourcedObject implements EventSourcedInterface
         
         return $vars;
     }
-    
+
+    /**
+     * @param SnapshotEvent $e
+     */
     protected function onSnapshot(SnapshotEvent $e)
     {
         $vars = $e->getPayload();

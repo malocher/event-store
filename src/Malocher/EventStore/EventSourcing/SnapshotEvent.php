@@ -15,6 +15,7 @@ use Malocher\Cqrs\Message\Message;
  * Special type of EventInterface that represents a full snapshot of a source
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\EventSourcing
  */
 class SnapshotEvent extends Message implements EventInterface
 {

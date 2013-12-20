@@ -17,6 +17,7 @@ use Malocher\EventStore\Repository\RepositoryInterface;
  * EventStore 
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore
  */
 class EventStore 
 {
