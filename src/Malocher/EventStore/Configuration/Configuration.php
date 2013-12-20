@@ -19,6 +19,11 @@ class Configuration
 {
     protected $config = array();
     
+    protected $adapter;
+    
+    protected $objectFactory;
+
+
     public function __construct(array $config = null)
     {
         if (is_array($config)) {
@@ -32,12 +37,20 @@ class Configuration
      */
     public function getAdapter()
     {
-        return $this->config['adapter'];
+        if (is_null($this->adapter)) {
+            $adapterConfig = $this->config['adapter'];
+
+            foreach ($adapterConfig as $adapterClass => $adapterConfig) {
+                $this->adapter = new $adapterClass($adapterConfig);
+            }
+        } 
+        
+        return $this->adapter;
     }
     
     public function setAdapter(AdapterInterface $adapter)
     {
-        $this->config['adapter'] = $adapter;
+        $this->adapter = $adapter;
     }
     
     /**
@@ -80,7 +93,7 @@ class Configuration
      */
     public function getSourceTypeClassMap()
     {
-        return (isset($this->config['source_type_class_map']))? (bool)$this->config['source_type_class_map'] : array();
+        return (isset($this->config['source_type_class_map']))? $this->config['source_type_class_map'] : array();
     }
     
     /**
@@ -89,6 +102,24 @@ class Configuration
      */
     public function getObjectFactory()
     {
-        return (isset($this->config['object_factory']))? (bool)$this->config['object_factory'] : new EventSourcedObjectFactory();
+        if (is_null($this->objectFactory)) 
+        {
+            if (isset($this->config['object_factory'])) {
+                $objectFactoryConfig = $this->config['object_factory'];
+
+                foreach ($objectFactoryConfig as $objectFactoryClass => $config) {
+                    $this->objectFactory = new $objectFactoryClass($config);
+                }
+            } else {
+                $this->objectFactory = new EventSourcedObjectFactory();
+            }
+        }
+        
+        return $this->objectFactory;
+    }
+    
+    public function setObjectFactory(EventSourcedObjectFactory $objectFactory)
+    {
+        $this->objectFactory = $objectFactory;
     }
 }
