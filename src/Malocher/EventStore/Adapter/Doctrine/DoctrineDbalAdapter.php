@@ -89,7 +89,6 @@ class DoctrineDbalAdapter implements AdapterInterface
             . 'sourceId  INTEGER,'
             . 'snapshotVersion INTEGER'
             . ')';
-        echo $snapshot_sql;
         $this->getConnection()->exec($snapshot_sql);
 
         foreach($streams as $stream){
@@ -103,7 +102,6 @@ class DoctrineDbalAdapter implements AdapterInterface
                 . 'eventVersion REAL,'
                 . 'timestamp INTEGER'
                 . ')';
-            echo $stream_sql;
             $this->getConnection()->exec($stream_sql);
         }
         return true;

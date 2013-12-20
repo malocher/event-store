@@ -23,9 +23,9 @@ class SchemaCreateCommand extends Command
     protected function configure()
     {
         $this
-            ->addArgument('streams',InputArgument::IS_ARRAY | InputArgument::REQUIRED,'names of streams to create')
             ->setName('schema:create')
             ->setDescription('Create EventStore schemas')
+            ->addArgument('streams',InputArgument::IS_ARRAY | InputArgument::REQUIRED,'Names of streams to create')
         ;
     }
 
@@ -34,7 +34,14 @@ class SchemaCreateCommand extends Command
         $streams = $input->getArgument('streams');
         $evenStore = $this->getHelper('es')->getEventStore();
         $adapter = $evenStore->getAdapter();
-        $adapter->createSchema($streams);
-        $output->writeln("<info>streams created</info>");
+        $success = $adapter->createSchema($streams);
+
+        // event dispatching ?!
+
+        if($success){
+            $output->writeln("<info>streams created</info>");
+        } else {
+            $output->writeln("<error>something went wrong</error>");
+        }
     }
 }
