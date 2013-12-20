@@ -86,12 +86,12 @@ class DoctrineDbalAdapter implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function addToStream($sourceType, $sourceId, $events)
+    public function addToStream($sourceFQCN, $sourceId, $events)
     {
         try {
             $this->conn->beginTransaction();
             foreach ($events as $event) {
-                $this->insertEvent($sourceType, $sourceId, $event);
+                $this->insertEvent($sourceFQCN, $sourceId, $event);
             }
             $this->conn->commit();
         } catch (\Exception $ex) {
@@ -103,17 +103,17 @@ class DoctrineDbalAdapter implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function loadStream($sourceType, $sourceId, $version = null)
+    public function loadStream($sourceFQCN, $sourceId, $version = null)
     {
         $queryBuilder = $this->conn->createQueryBuilder();
         
-        $queryBuilder->select('*')->from($this->getTable($sourceType), 'event')
+        $queryBuilder->select('*')->from($this->getTable($sourceFQCN), 'event')
             ->where('event.sourceId = :sourceId')
             ->orderBy('event.sourceVersion')
             ->setParameter('sourceId', $sourceId);
         
         if (!is_null($version)) {
-            $queryBuilder->andWhere('event.sourceVersion = :sourceVersion')
+            $queryBuilder->andWhere('event.sourceVersion >= :sourceVersion')
                 ->setParameter('sourceVersion', $version);
         }
         
@@ -139,15 +139,15 @@ class DoctrineDbalAdapter implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function createSnapshot($sourceType, $sourceId, SnapshotEvent $event)
+    public function createSnapshot($sourceFQCN, $sourceId, SnapshotEvent $event)
     {
         try {
             $this->conn->beginTransaction();
             
-            $this->insertEvent($sourceType, $sourceId, $event);
+            $this->insertEvent($sourceFQCN, $sourceId, $event);
             
             $snapshotMetaData = array(
-                'sourceType' => $sourceType,
+                'sourceType' => $sourceFQCN,
                 'sourceId' => $sourceId,
                 'snapshotVersion' => $event->getSourceVersion()
             );
@@ -163,14 +163,14 @@ class DoctrineDbalAdapter implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function getCurrentSnapshotVersion($sourceType, $sourceId)
+    public function getCurrentSnapshotVersion($sourceFQCN, $sourceId)
     {
         $queryBuilder = $this->conn->createQueryBuilder();
         
         $queryBuilder->select('s.snapshotVersion')
             ->from($this->snapshotTable, 's')
             ->where('s.sourceType = :sourceType AND s.sourceId = :sourceId')
-            ->setParameter('sourceType', $sourceType)
+            ->setParameter('sourceType', $sourceFQCN)
             ->setParameter('sourceId', $sourceId);
         
         $row = $queryBuilder->execute()->fetch(\PDO::FETCH_ASSOC);;
@@ -185,13 +185,13 @@ class DoctrineDbalAdapter implements AdapterInterface
     /**
      * Insert an event
      * 
-     * @param string         $sourceType
+     * @param string         $sourceFQCN
      * @param string         $sourceId
      * @param EventInterface $e
      * 
      * @return void
      */
-    protected function insertEvent($sourceType, $sourceId, EventInterface $e)
+    protected function insertEvent($sourceFQCN, $sourceId, EventInterface $e)
     {        
         $eventData = array(
             'sourceId' => $sourceId,
@@ -203,7 +203,7 @@ class DoctrineDbalAdapter implements AdapterInterface
             'timestamp' => $e->getTimestamp()
         );
 
-        $this->conn->insert($this->getTable($sourceType), $eventData);
+        $this->conn->insert($this->getTable($sourceFQCN), $eventData);
     }
 
     /**
@@ -226,14 +226,19 @@ class DoctrineDbalAdapter implements AdapterInterface
      * 
      * @return string
      */
-    protected function getTable($sourceType)
+    protected function getTable($sourceFQCN)
     {
-        if (isset($this->sourceTypeTableMap[$sourceType])) {
-            $tableName = $this->sourceTypeTableMap[$sourceType];
+        if (isset($this->sourceTypeTableMap[$sourceFQCN])) {
+            $tableName = $this->sourceTypeTableMap[$sourceFQCN];
         } else {
-            $tableName = strtolower($sourceType) . "_stream";
+            $tableName = strtolower($this->getShortSourceType($sourceFQCN)) . "_stream";
         }
         
         return $tableName;
+    }
+    
+    protected function getShortSourceType($sourceFQCN)
+    {
+        return join('', array_slice(explode('\\', $sourceFQCN), -1));
     }
 }

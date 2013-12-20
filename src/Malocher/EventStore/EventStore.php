@@ -11,7 +11,7 @@ namespace Malocher\EventStore;
 use Malocher\EventStore\Adapter\AdapterInterface;
 use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventSourcing\EventSourcedInterface;
-
+use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 /**
  * EventStore 
  * 
@@ -62,6 +62,10 @@ class EventStore
      */
     protected $sourceTypeClassMap = array();
     
+    /**
+     *
+     * @var EventSourcedObjectFactory 
+     */
     protected $objectFactory;
 
     /**
@@ -101,13 +105,22 @@ class EventStore
         }
     }
 
-    public function save($sourceType, EventSourcedInterface $eventSourcedObject)
+    /**
+     * Save given EventSourcedObject
+     * 
+     * @param EventSourcedInterface $eventSourcedObject
+     * 
+     * @return void
+     */
+    public function save(EventSourcedInterface $eventSourcedObject)
     {
+        $sourceFQCN = get_class($eventSourcedObject);
+        
         $pendingEvents = $eventSourcedObject->getPendingEvents();
         
         if (count($pendingEvents)) {
             $this->adapter->addToStream(
-                $this->getShortSourceType($sourceType), 
+                $sourceFQCN, 
                 $eventSourcedObject->getId(), 
                 $pendingEvents
             );
@@ -120,31 +133,68 @@ class EventStore
                 && $lastEvent->getSourceVersion() % $this->snapshotInterval === 0) {
                 $snapshotEvent = $eventSourcedObject->getSnapshot();
                 $this->adapter->createSnapshot(
-                    $this->getShortSourceType($sourceType), 
+                    $sourceFQCN, 
                     $eventSourcedObject->getId(), 
                     $snapshotEvent
                 );
             }
         }
         
-        $this->identityMap[$this->getIdentityHash($eventSourcedObject)] = $eventSourcedObject;
+        $hash = $this->getIdentityHash(
+            get_class($eventSourcedObject), 
+            $eventSourcedObject->getId()
+        );
+        
+        $this->identityMap[$hash] = $eventSourcedObject;
     }
    
-    
-    public function find($sourceType, $sourceId)
+    /**
+     * Load an EventSourcedObject by it's FQCN and id
+     * 
+     * @param string $sourceFQCN
+     * @param string $sourceId
+     * 
+     * @return EventSourcedInterface
+     */        
+    public function find($sourceFQCN, $sourceId)
     {
+        $hash = $this->getIdentityHash($sourceFQCN, $sourceId);
         
+        if (isset($this->identityMap[$hash])) {
+            return $this->identityMap[$hash];
+        }
+        
+        $snapshotVersion = null;
+        
+        if ($this->lookupSnapshots) {
+            $snapshotVersion = $this->adapter->getCurrentSnapshotVersion($sourceFQCN, $sourceId);
+        }
+        
+        $historyEvents = $this->adapter->loadStream($sourceFQCN, $sourceId, $snapshotVersion);
+        
+        return $this->objectFactory->create($sourceFQCN, $sourceId, $historyEvents);
     }
     
-    protected function getIdentityHash(EventSourcedInterface $eventSourcedObject)
+    /**
+     * Clear cached objects
+     * 
+     * @return void
+     */
+    public function clear()
     {
-        $className = get_class($eventSourcedObject);
-        
-        return $className . '::' . $eventSourcedObject->getId();
+        $this->identityMap = array();
     }
     
-    protected function getShortSourceType($FQCNSourceType)
-    {
-        return join('', array_slice(explode('\\', $FQCNSourceType), -1));
+    /**
+     * Get hash to identify EventSourcedObject in the IdentityMap
+     * 
+     * @param string $sourceFQCN
+     * @param string $sourceId
+     * 
+     * @return string
+     */
+    protected function getIdentityHash($sourceFQCN, $sourceId)
+    {        
+        return $sourceFQCN . '::' . $sourceId;
     }
 }

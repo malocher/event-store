@@ -9,11 +9,23 @@
 namespace Malocher\EventStore\EventSourcing;
 
 /**
- * EventSourcedObjectFactory
+ * Default EventSourcedObjectFactory
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class EventSourcedObjectFactory 
 {
-    
+    /**
+     * Create new instance of EventSourcedObject referenced by id
+     * 
+     * @param string $sourceFQCN
+     * @param string $id
+     * @param array $history
+     * 
+     * @return EventSourcedObject
+     */
+    public function create($sourceFQCN, $id, array $history = null)
+    {
+        return new $sourceFQCN($id, $history);
+    }
 }

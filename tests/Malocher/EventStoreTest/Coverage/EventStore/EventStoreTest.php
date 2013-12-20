@@ -12,6 +12,7 @@ use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventStore;
 use Malocher\EventStoreTest\TestCase;
 
+use Malocher\EventStoreTest\Coverage\Mock\User;
 /**
  * EventStoreTest
  * 
@@ -28,6 +29,7 @@ class EventStoreTest extends TestCase
     public function setUp()
     {
         $this->initEventStoreAdapter();
+        $this->createStream('user_stream');
         
         $config = new Configuration();
         $config->setAdapter($this->getEventStoreAdapter());        
@@ -37,7 +39,42 @@ class EventStoreTest extends TestCase
     public function testConstructed()
     {
         $this->assertInstanceOf('Malocher\EventStore\EventStore', $this->eventStore);
-        //$this->adapter = $config->getAdapter();
-        //$this->snapshotInterval = $config->getSnapshotInterval();
+    }
+    
+    public function testSaveAndFind()
+    {
+        $user = new User('1');
+        
+        $user->changeName('Malocher');
+        $user->changeEmail('my.email@getmalocher.org');
+        
+        $this->eventStore->save($user);
+        
+        $this->eventStore->clear();
+        
+        $userFQCN = get_class($user);
+        
+        $checkUser = $this->eventStore->find($userFQCN, '1');
+        
+        $this->assertInstanceOf($userFQCN, $checkUser);
+        $this->assertNotSame($user, $checkUser);
+        $this->assertEquals($user->getName(), $checkUser->getName());
+        $this->assertEquals($user->getEmail(), $checkUser->getEmail());
+    }
+    
+    public function testIdentityMap()
+    {
+        $user = new User('1');
+        
+        $user->changeName('Malocher');
+        $user->changeEmail('my.email@getmalocher.org');
+        
+        $this->eventStore->save($user);
+        
+        $userFQCN = get_class($user);
+        
+        $checkUser = $this->eventStore->find($userFQCN, '1');
+        
+        $this->assertSame($user, $checkUser);
     }
 }

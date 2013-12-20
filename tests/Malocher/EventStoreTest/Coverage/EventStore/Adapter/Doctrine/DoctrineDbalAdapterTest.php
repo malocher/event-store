@@ -80,4 +80,39 @@ class DoctrineDbalAdapterTest extends TestCase
             $this->doctrineDbalAdapter->loadStream('User', '1')
         );
     }
+    
+    public function testLoadStreamFromVersionOn()
+    {
+        $yesterdayTimestamp = time() - 86400;
+        $userNameChangedEvent = new UserNameChangedEvent(array('name' => 'Malocher'), '100', $yesterdayTimestamp, 2.0);
+        $userNameChangedEvent->setSourceId('1');
+        $userNameChangedEvent->setSourceVersion(1);
+        
+        $userEmailChangedEvent = new UserEmailChangedEvent(array('email' => 'my.mail@getmalocher.org'), '101', $yesterdayTimestamp, 2.0);
+        $userEmailChangedEvent->setSourceId('1');
+        $userEmailChangedEvent->setSourceVersion(2);
+        
+        $this->doctrineDbalAdapter->addToStream('User', '1', array($userNameChangedEvent, $userEmailChangedEvent));
+        
+        $snapshotEvent = new SnapshotEvent(array('name' => 'Malocher', 'email' => 'my.mail@getmalocher.org'), '102', $yesterdayTimestamp, 2.0);
+        $snapshotEvent->setSourceId('1');
+        $snapshotEvent->setSourceVersion(3);
+        
+        $this->doctrineDbalAdapter->createSnapshot('User', '1', $snapshotEvent);
+        
+        $userEmailChangedEvent2 = new UserEmailChangedEvent(array('email' => 'contact@getmalocher.org'), '103', $yesterdayTimestamp, 2.0);
+        $userEmailChangedEvent2->setSourceId('1');
+        $userEmailChangedEvent2->setSourceVersion(4);
+        
+        $this->doctrineDbalAdapter->addToStream('User', '1', array($userEmailChangedEvent2));
+        
+        $this->assertEquals(
+            array($snapshotEvent, $userEmailChangedEvent2), 
+            $this->doctrineDbalAdapter->loadStream(
+                'User', 
+                '1', 
+                $this->doctrineDbalAdapter->getCurrentSnapshotVersion('User', '1')
+            )
+        );
+    }
 }
