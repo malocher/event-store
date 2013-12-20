@@ -10,8 +10,10 @@ namespace Malocher\EventStore\Configuration;
 
 use Malocher\EventStore\Adapter\AdapterInterface;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
- *  Configuration
+ * Configuration
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
@@ -22,6 +24,8 @@ class Configuration
     protected $adapter;
     
     protected $objectFactory;
+    
+    protected $eventDispatcher;
 
 
     /**
@@ -104,16 +108,6 @@ class Configuration
     }
     
     /**
-     * Map of short sourcceTypes and their corresponding FQCNs
-     * 
-     * @return array
-     */
-    public function getSourceTypeClassMap()
-    {
-        return (isset($this->config['source_type_class_map']))? $this->config['source_type_class_map'] : array();
-    }
-    
-    /**
      * Get map of $sourceFQCNs to $repositoryFQCNs
      * 
      * @return array
@@ -153,5 +147,23 @@ class Configuration
     public function setObjectFactory(EventSourcedObjectFactory $objectFactory)
     {
         $this->objectFactory = $objectFactory;
+    }
+    
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        if (is_null($this->eventDispatcher)) {
+            $this->eventDispatcher = (isset($this->config['event_dispatcher']))? 
+                $this->config['event_dispatcher'] : new EventDispatcher();
+        }
+        
+        return $this->eventDispatcher;
+    }
+    
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 }
