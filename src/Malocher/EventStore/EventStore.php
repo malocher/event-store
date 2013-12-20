@@ -11,6 +11,7 @@ namespace Malocher\EventStore;
 use Malocher\EventStore\Adapter\AdapterInterface;
 use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventSourcing\EventSourcedInterface;
+
 /**
  * EventStore 
  * 
@@ -81,7 +82,25 @@ class EventStore
             $this->lookupSnapshots = true;
         }
     }
-    
+
+    /**
+     * Execute commands
+     *
+     * Example:
+     * php bin\eventstore demo:greet "Manfred"
+     *
+     * @param $command
+     * @param $arguments
+     */
+    public function executeCommand($command,$arguments)
+    {
+        switch($command){
+            case 'demo:greet':
+                echo $arguments['name'];
+                break;
+        }
+    }
+
     public function save($sourceType, EventSourcedInterface $eventSourcedObject)
     {
         $pendingEvents = $eventSourcedObject->getPendingEvents();

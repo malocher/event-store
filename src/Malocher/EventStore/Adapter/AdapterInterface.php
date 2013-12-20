@@ -49,7 +49,10 @@ interface AdapterInterface
     /**
      * Get the current snapshot version of given source
      * 
-     * @return float
+     * @param $sourceType
+     * @param $sourceId
+     * 
+     * @return mixed
      */
     public function getCurrentSnapshotVersion($sourceType, $sourceId);
 }

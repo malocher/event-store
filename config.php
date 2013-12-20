@@ -1,5 +1,5 @@
 <?php
-$config = array(
+return array(
     'adapter'                   => array(
         'Malocher\EventStore\Adapter\Doctrine\DoctrineDbalAdapter' => array(
             'user'=>'',

@@ -31,8 +31,8 @@ class EventStoreTest extends TestCase
             'adapter' => '',
             'snapshot_interval' => '',
         );
-        $eventStoreConfiguration = new Configuration($config);
-        $this->eventStore = new EventStore($eventStoreConfiguration);
+        $configuration = new Configuration($config);
+        $this->eventStore = new EventStore($configuration);
     }
 
     public function testConstructed()

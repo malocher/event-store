@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Malocher\EventStore\Tools\Console\Command;
+namespace Malocher\EventStore\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,18 +41,26 @@ class GreetCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /*
         $name = $input->getArgument('name');
         if ($name) {
             $text = 'Hello '.$name;
         } else {
             $text = 'Hello';
         }
+        */
 
+        $evenStore = $this->getHelper('es')->getEventStore();
+
+        /*
         if ($input->getOption('yell')) {
             $text = strtoupper($text);
         }
+        */
 
-        $output->writeln("<error>Something went wrong</error>");
-        $output->writeln("<info>Some information</info>");
+        $evenStore->executeCommand($this->getName(),$input->getArguments());
+
+        //$output->writeln("<error>Something went wrong</error>");
+        //$output->writeln("<info>Some information</info>");
     }
 }
