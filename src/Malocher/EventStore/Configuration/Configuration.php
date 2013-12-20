@@ -10,8 +10,10 @@ namespace Malocher\EventStore\Configuration;
 
 use Malocher\EventStore\Adapter\AdapterInterface;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
- *  Configuration
+ * Configuration
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
@@ -22,6 +24,8 @@ class Configuration
     protected $adapter;
     
     protected $objectFactory;
+    
+    protected $eventDispatcher;
 
 
     public function __construct(array $config = null)
@@ -130,5 +134,23 @@ class Configuration
     public function setObjectFactory(EventSourcedObjectFactory $objectFactory)
     {
         $this->objectFactory = $objectFactory;
+    }
+    
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        if (is_null($this->eventDispatcher)) {
+            $this->eventDispatcher = (isset($this->config['event_dispatcher']))? 
+                $this->config['event_dispatcher'] : new EventDispatcher();
+        }
+        
+        return $this->eventDispatcher;
+    }
+    
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 }

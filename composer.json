@@ -25,7 +25,8 @@
     "require": {
         "malocher/cqrs-esb": "1.*",
         "symfony/console": "2.*",
-        "jms/serializer": "0.14.*"
+        "symfony/event-dispatcher": "2.4.*",
+        "jms/serializer": "0.14.*"        
     },
     "suggest": {
         "doctrine/dbal": "Use Doctrine\\DBAL as EventStore-Adapter"

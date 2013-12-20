@@ -13,6 +13,8 @@ use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventSourcing\EventSourcedInterface;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Malocher\EventStore\Repository\RepositoryInterface;
+use Malocher\EventStore\StoreEvent\PostPersistEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * EventStore 
  * 
@@ -75,6 +77,11 @@ class EventStore
      * @var EventSourcedObjectFactory 
      */
     protected $objectFactory;
+    
+    /**
+     * @var EventDispatcherInterface 
+     */
+    protected $eventDispatcher;
 
     /**
      * Construct
@@ -89,6 +96,8 @@ class EventStore
         $this->snapshotInterval = $config->getSnapshotInterval();
         $this->sourceTypeClassMap = $config->getSourceTypeClassMap();
         $this->objectFactory = $config->getObjectFactory();
+        $this->eventDispatcher = $config->getEventDispatcher();
+        
                 
         if ($this->autoGenerateSnapshots) {
             $this->lookupSnapshots = true;
@@ -130,6 +139,16 @@ class EventStore
         
         return $repository;
     }
+    
+    /**
+     * Get EventDispatcher of the EventStore
+     * 
+     * @return EventDispatcherInterface
+     */
+    public function events()
+    {
+        return $this->eventDispatcher;
+    }
 
     /**
      * Save given EventSourcedObject
@@ -151,6 +170,8 @@ class EventStore
                 $pendingEvents
             );
             
+            $postPersistEvent = new PostPersistEvent($eventSourcedObject, $pendingEvents);
+            
             $lastEvent = array_pop($pendingEvents);
             
             //Check if we have to generate a snapshot 
@@ -164,6 +185,8 @@ class EventStore
                     $snapshotEvent
                 );
             }
+            
+            $this->events()->dispatch(PostPersistEvent::NAME, $postPersistEvent);
         }
         
         $hash = $this->getIdentityHash(
