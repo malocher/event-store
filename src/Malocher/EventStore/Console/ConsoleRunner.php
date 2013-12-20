@@ -8,9 +8,8 @@
  */
 namespace Malocher\EventStore\Console;
 
-use Malocher\EventStore\Console\Command\GreetCommand;
 use Malocher\EventStore\Console\Command\InfoCommand;
-use Malocher\EventStore\Console\Command\InstallCommand;
+use Malocher\EventStore\Console\Command\SchemaInstallCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -31,7 +30,7 @@ class ConsoleRunner
     {
         $cli->addCommands(array(
             new InfoCommand(),
-            new InstallCommand()
+            new SchemaInstallCommand()
         ));
     }
 }

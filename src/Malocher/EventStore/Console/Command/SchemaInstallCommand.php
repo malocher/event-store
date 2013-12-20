@@ -15,16 +15,16 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InstallCommand
+ * Class SchemaInstallCommand
  * @package Malocher\EventStore\Console\Command
  */
-class InstallCommand extends Command
+class SchemaInstallCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('es:install')
-            ->setDescription('Install EventStore')
+            ->setName('schema:install')
+            ->setDescription('Install EventStore schemas')
         ;
     }
 
