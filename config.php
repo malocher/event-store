@@ -2,10 +2,10 @@
 return array(
     'adapter'                   => array(
         'Malocher\EventStore\Adapter\Doctrine\DoctrineDbalAdapter' => array(
-            'user'=>'',
-            'pass'=>'',
-            'host'=>'',
-            'port'=>''
+            'connection' => array(
+                'driver' => 'pdo_sqlite',
+                'memory' => true
+            )
         )
     ),
     'snapshot_interval'         => 20,

@@ -73,9 +73,17 @@ class DoctrineDbalAdapter implements AdapterInterface
         
         $this->conn = DriverManager::getConnection($options['connection']);
     }
-    
+
     /**
-     * 
+     * install
+     */
+    public function install()
+    {
+        echo "install";
+    }
+
+    /**
+     *
      * @return Connection
      */
     public function getConnection()

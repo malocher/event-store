@@ -83,22 +83,9 @@ class EventStore
         }
     }
 
-    /**
-     * Execute commands
-     *
-     * Example:
-     * php bin\eventstore demo:greet "Manfred"
-     *
-     * @param $command
-     * @param $arguments
-     */
-    public function executeCommand($command,$arguments)
+    public function getAdapter()
     {
-        switch($command){
-            case 'demo:greet':
-                echo $arguments['name'];
-                break;
-        }
+        return $this->adapter;
     }
 
     public function save($sourceType, EventSourcedInterface $eventSourcedObject)

@@ -17,15 +17,17 @@ use Malocher\EventStore\EventSourcing\SnapshotEvent;
  */
 interface AdapterInterface
 {
+    public function install();
+
     /**
      * Load EventStream of an EventSourced object from given version on
-     * 
+     *
      * Pass null as version to get the complete stream
-     * 
+     *
      * @param string $sourceType
      * @param string $sourceId
      * @param float  $version
-     * 
+     *
      * @return EventInterface[]
      */
     public function loadStream($sourceType, $sourceId, $version = null);
