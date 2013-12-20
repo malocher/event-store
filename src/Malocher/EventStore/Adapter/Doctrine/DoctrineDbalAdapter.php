@@ -117,7 +117,7 @@ class DoctrineDbalAdapter implements AdapterInterface
      */
     public function dropSchema(array $streams)
     {
-
+        return true;
     }
 
     /**
@@ -128,7 +128,10 @@ class DoctrineDbalAdapter implements AdapterInterface
      */
     public function importSchema($file)
     {
-
+        if(file_exists($file)){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -139,7 +142,7 @@ class DoctrineDbalAdapter implements AdapterInterface
      */
     public function exportSchema($file)
     {
-
+        return true;
     }
 
     /**
