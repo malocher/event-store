@@ -31,6 +31,7 @@ class SchemaExportCommand extends Command
             ->setName('schema:export')
             ->setDescription('Export EventStore schemas')
             ->addArgument('file',InputArgument::REQUIRED,'Path to export file')
+            ->addOption('snapshots-only',null,InputOption::VALUE_NONE,'Export snapshots only or complete history?');
         ;
     }
 
@@ -43,10 +44,11 @@ class SchemaExportCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $snapshots_only = $input->getOption('snapshots-only');
         $file = $input->getArgument('file');
         $evenStore = $this->getHelper('es')->getEventStore();
         $adapter = $evenStore->getAdapter();
-        $success = $adapter->exportSchema($file);
+        $success = $adapter->exportSchema($file,$snapshots_only);
 
         // event dispatching ?!
 

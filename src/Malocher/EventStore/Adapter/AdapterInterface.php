@@ -55,9 +55,10 @@ interface AdapterInterface
      * Pass a file name
      *
      * @param $file
+     * @param $snapshots_only
      * @return mixed
      */
-    public function exportSchema($file);
+    public function exportSchema($file, $snapshots_only);
 
     /**
      * Load EventStream of an EventSourced object from given version on

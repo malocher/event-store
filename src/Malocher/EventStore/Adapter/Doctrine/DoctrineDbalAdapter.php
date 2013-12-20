@@ -138,9 +138,10 @@ class DoctrineDbalAdapter implements AdapterInterface
      * exportSchema
      *
      * @param $file
-     * @return mixed|void
+     * @param boolean $snapshots_only
+     * @return bool|mixed
      */
-    public function exportSchema($file)
+    public function exportSchema($file, $snapshots_only)
     {
         return true;
     }
