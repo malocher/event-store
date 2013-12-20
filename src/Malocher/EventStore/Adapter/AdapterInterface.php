@@ -17,7 +17,7 @@ use Malocher\EventStore\EventSourcing\SnapshotEvent;
  */
 interface AdapterInterface
 {
-    public function install();
+    public function createSchema(array $streams);
 
     /**
      * Load EventStream of an EventSourced object from given version on

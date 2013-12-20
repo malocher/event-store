@@ -75,11 +75,38 @@ class DoctrineDbalAdapter implements AdapterInterface
     }
 
     /**
-     * install
+     * createSchema
+     *
+     * @param array $streams
+     * @return bool
      */
-    public function install()
+    public function createSchema(array $streams)
     {
-        return "Doctrine DbalAdapter ... install schema";
+        $snapshot_sql = 'CREATE TABLE snapshot '
+            . '('
+            . 'id INTEGER PRIMARY KEY,'
+            . 'sourceType TEXT,'
+            . 'sourceId  INTEGER,'
+            . 'snapshotVersion INTEGER'
+            . ')';
+        echo $snapshot_sql;
+        $this->getConnection()->exec($snapshot_sql);
+
+        foreach($streams as $stream){
+            $stream_sql = 'CREATE TABLE ' . $stream . ' '
+                . '('
+                . 'eventId TEXT PRIMARY KEY,'
+                . 'sourceId INTEGER,'
+                . 'sourceVersion INTEGER,'
+                . 'eventClass TEXT,'
+                . 'payload TEXT,'
+                . 'eventVersion REAL,'
+                . 'timestamp INTEGER'
+                . ')';
+            echo $stream_sql;
+            $this->getConnection()->exec($stream_sql);
+        }
+        return true;
     }
 
     /**

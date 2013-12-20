@@ -9,7 +9,7 @@
 namespace Malocher\EventStore\Console;
 
 use Malocher\EventStore\Console\Command\SchemaInfoCommand;
-use Malocher\EventStore\Console\Command\SchemaInstallCommand;
+use Malocher\EventStore\Console\Command\SchemaCreateCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -32,7 +32,7 @@ class ConsoleRunner
     {
         $cli->addCommands(array(
             new SchemaInfoCommand(),
-            new SchemaInstallCommand()
+            new SchemaCreateCommand()
         ));
     }
 }
