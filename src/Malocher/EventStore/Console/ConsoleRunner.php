@@ -10,6 +10,7 @@ namespace Malocher\EventStore\Console;
 
 use Malocher\EventStore\Console\Command\GreetCommand;
 use Malocher\EventStore\Console\Command\InfoCommand;
+use Malocher\EventStore\Console\Command\InstallCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -29,8 +30,8 @@ class ConsoleRunner
     static public function addCommands(Application $cli)
     {
         $cli->addCommands(array(
-            new GreetCommand(),
-            new InfoCommand()
+            new InfoCommand(),
+            new InstallCommand()
         ));
     }
 }

@@ -79,7 +79,7 @@ class DoctrineDbalAdapter implements AdapterInterface
      */
     public function install()
     {
-        echo "install";
+        return "Doctrine DbalAdapter ... install schema";
     }
 
     /**
