@@ -73,6 +73,15 @@ class DoctrineDbalAdapter implements AdapterInterface
         
         $this->conn = DriverManager::getConnection($options['connection']);
     }
+    
+    /**
+     * 
+     * @return Connection
+     */
+    public function getConnection()
+    {
+        return $this->conn;
+    }
 
     /**
      * {@inheritDoc}
@@ -98,9 +107,9 @@ class DoctrineDbalAdapter implements AdapterInterface
     {
         $queryBuilder = $this->conn->createQueryBuilder();
         
-        $queryBuilder->select()->from($this->getTable($sourceType), 'event')
+        $queryBuilder->select('*')->from($this->getTable($sourceType), 'event')
             ->where('event.sourceId = :sourceId')
-            ->orderBy('event.sourceVersion ASC')
+            ->orderBy('event.sourceVersion')
             ->setParameter('sourceId', $sourceId);
         
         if (!is_null($version)) {
@@ -108,9 +117,8 @@ class DoctrineDbalAdapter implements AdapterInterface
                 ->setParameter('sourceVersion', $version);
         }
         
-        $statement = $this->conn->executeQuery($queryBuilder->getSQL());
+        $eventsData = $queryBuilder->execute()->fetchAll();
         
-        $eventsData = $statement->fetchAll();
         $events = array();
         
         foreach ($eventsData as $eventData) {
@@ -118,8 +126,9 @@ class DoctrineDbalAdapter implements AdapterInterface
             
             $payload = $this->getSerializer()->deserialize($eventData['payload'], 'array', 'json');
             
-            $event = new $eventClass($payload, $eventData['eventId'], $eventData['timestamp'], $eventData['eventVersion']);
-            $event->setSourceVersion($eventData['sourceVersion']);
+            $event = new $eventClass($payload, $eventData['eventId'], (int)$eventData['timestamp'], (float)$eventData['eventVersion']);
+            $event->setSourceVersion((int)$eventData['sourceVersion']);
+            $event->setSourceId($sourceId);
             
             $events[] = $event;
         }
@@ -156,7 +165,21 @@ class DoctrineDbalAdapter implements AdapterInterface
      */
     public function getCurrentSnapshotVersion($sourceType, $sourceId)
     {
+        $queryBuilder = $this->conn->createQueryBuilder();
         
+        $queryBuilder->select('s.snapshotVersion')
+            ->from($this->snapshotTable, 's')
+            ->where('s.sourceType = :sourceType AND s.sourceId = :sourceId')
+            ->setParameter('sourceType', $sourceType)
+            ->setParameter('sourceId', $sourceId);
+        
+        $row = $queryBuilder->execute()->fetch(\PDO::FETCH_ASSOC);;
+        
+        if ($row) {
+            return (int)$row['snapshotVersion'];
+        }
+        
+        return 0;
     }
 
     /**
@@ -206,9 +229,11 @@ class DoctrineDbalAdapter implements AdapterInterface
     protected function getTable($sourceType)
     {
         if (isset($this->sourceTypeTableMap[$sourceType])) {
-            return $this->sourceTypeTableMap[$sourceType];
+            $tableName = $this->sourceTypeTableMap[$sourceType];
+        } else {
+            $tableName = strtolower($sourceType) . "_stream";
         }
         
-        return $sourceType;
+        return $tableName;
     }
 }
