@@ -24,7 +24,7 @@
     ],
     "require": {
         "malocher/cqrs-esb": "1.*",
-        
+        "symfony/console": "2.*",
         "jms/serializer": "0.14.*"
     },
     "suggest": {
@@ -40,5 +40,6 @@
             "Malocher\\EventStore\\": "src/",
             "Malocher\\EventStoreTest\\": "tests/"
         }
-    }
+    },
+    "bin": ["bin/eventstore", "bin/eventstore.php"]
 }
