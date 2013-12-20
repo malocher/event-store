@@ -30,6 +30,36 @@ interface AdapterInterface
     public function createSchema(array $streams);
 
     /**
+     * Drop schemas from names list
+     *
+     * Pass a list of names i.e. "array(user, post, ...)
+     *
+     * @param array $streams
+     * @return mixed
+     */
+    public function dropSchema(array $streams);
+
+    /**
+     * Import a schema
+     *
+     * Pass a file name
+     *
+     * @param $file
+     * @return mixed
+     */
+    public function importSchema($file);
+
+    /**
+     * Export a schema
+     *
+     * Pass a file name
+     *
+     * @param $file
+     * @return mixed
+     */
+    public function exportSchema($file);
+
+    /**
      * Load EventStream of an EventSourced object from given version on
      *
      * Pass null as version to get the complete stream

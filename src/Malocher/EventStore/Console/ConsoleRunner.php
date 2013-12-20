@@ -8,6 +8,9 @@
  */
 namespace Malocher\EventStore\Console;
 
+use Malocher\EventStore\Console\Command\SchemaDropCommand;
+use Malocher\EventStore\Console\Command\SchemaExportCommand;
+use Malocher\EventStore\Console\Command\SchemaImportCommand;
 use Malocher\EventStore\Console\Command\SchemaInfoCommand;
 use Malocher\EventStore\Console\Command\SchemaCreateCommand;
 use Symfony\Component\Console\Application;
@@ -32,12 +35,11 @@ class ConsoleRunner
      */
     static public function run(HelperSet $helperSet, $commands = array())
     {
-        $cli = new \Symfony\Component\Console\Application('Malocher EventStore Command Line Interface', self::VERSION);
+        $cli = new \Symfony\Component\Console\Application('Malocher EventStore CLI', self::VERSION);
 
         $cli->setHelperSet($helperSet);
         $cli->setCatchExceptions(true);
         self::addCommands($cli);
-        $cli->addCommands($commands);
         $cli->run();
     }
 
@@ -48,7 +50,11 @@ class ConsoleRunner
     {
         $cli->addCommands(array(
             new SchemaInfoCommand(),
-            new SchemaCreateCommand()
+            new SchemaCreateCommand(),
+            new SchemaDropCommand(),
+            new SchemaImportCommand(),
+            new SchemaExportCommand()
         ));
     }
+
 }

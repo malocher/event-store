@@ -9,7 +9,7 @@ return array(
         )
     ),
     'snapshot_interval'         => 20,
-    'object_factory'            => 'Malocher\EventStore\EventSourcing\EventSourcedObjectFactory',
+    //'object_factory'            => 'Malocher\EventStore\EventSourcing\EventSourcedObjectFactory',
     'source_type_class_map'     => array(
         'user' => 'Malocher\EventStore\Entity\User'
     ),
