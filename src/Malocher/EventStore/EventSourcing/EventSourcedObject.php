@@ -111,10 +111,11 @@ class EventSourcedObject implements EventSourcedInterface
      * 
      * Method is called during construct
      * 
-     * @return void
+     * @throws EventSourcingException
      */
     protected function registerHandlers()
     {
+        throw EventSourcingException::handlerException('No handlers registered!');
     }
     
     /**
