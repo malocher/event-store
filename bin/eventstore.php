@@ -25,7 +25,7 @@ foreach ($directories as $directory) {
     }
 }
 if ( ! file_exists($configFile)) {
-    echo "no config file";
+    echo 'You are missing a "config.php" or "config/config.php" file in your project.';
     exit(1);
 }
 if ( ! is_readable($configFile)) {

@@ -30,11 +30,24 @@ class Configuration
     protected $eventDispatcher;
 
 
+    /**
+     * @param array $config
+     */
     public function __construct(array $config = null)
     {
         if (is_array($config)) {
             $this->config = $config;
         }
+    }
+
+    /**
+     * Check if configuration is valid
+     *
+     * @todo implement
+     * @return bool
+     */
+    public function validateConfiguration()
+    {
     }
     
     /**
@@ -52,7 +65,12 @@ class Configuration
         
         return $this->adapter;
     }
-    
+
+    /**
+     * Set the active adapter
+     *
+     * @param AdapterInterface $adapter
+     */
     public function setAdapter(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
@@ -122,7 +140,12 @@ class Configuration
         
         return $this->objectFactory;
     }
-    
+
+    /**
+     * Set the object factory
+     *
+     * @param EventSourcedObjectFactory $objectFactory
+     */
     public function setObjectFactory(EventSourcedObjectFactory $objectFactory)
     {
         $this->objectFactory = $objectFactory;

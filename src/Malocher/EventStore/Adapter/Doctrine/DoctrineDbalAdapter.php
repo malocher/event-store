@@ -110,6 +110,43 @@ class DoctrineDbalAdapter implements AdapterInterface
     }
 
     /**
+     * dropSchema
+     *
+     * @param array $streams
+     * @return bool
+     */
+    public function dropSchema(array $streams)
+    {
+        return true;
+    }
+
+    /**
+     * importSchema
+     *
+     * @param $file
+     * @return mixed|void
+     */
+    public function importSchema($file)
+    {
+        if(file_exists($file)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * exportSchema
+     *
+     * @param $file
+     * @param boolean $snapshots_only
+     * @return bool|mixed
+     */
+    public function exportSchema($file, $snapshots_only)
+    {
+        return true;
+    }
+
+    /**
      *
      * @return Connection
      */
