@@ -14,6 +14,7 @@ use Malocher\EventStore\EventSourcing\EventSourcedInterface;
  *  EventSourcingRepository
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\Repository
  */
 class EventSourcingRepository implements RepositoryInterface
 {

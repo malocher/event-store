@@ -14,10 +14,20 @@ use Malocher\EventStore\EventSourcing\SnapshotEvent;
  * Interface of an EventStore Adapter
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Manfred Weber <crafics@php.net>
+ * @package Malocher\EventStore\Adapter
  */
 interface AdapterInterface
 {
-    public function install();
+    /**
+     * Create schemas from names list
+     *
+     * Pass a list of names i.e. "array(user, post, ...)
+     *
+     * @param array $streams
+     * @return mixed
+     */
+    public function createSchema(array $streams);
 
     /**
      * Load EventStream of an EventSourced object from given version on

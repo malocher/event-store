@@ -13,6 +13,7 @@ use Malocher\Cqrs\Message\Message;
  * ObjectChangedEvent
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\EventSourcing
  */
 class ObjectChangedEvent extends Message implements EventInterface
 {

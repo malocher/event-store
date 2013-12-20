@@ -13,6 +13,7 @@ use Malocher\Cqrs\Event\EventInterface as CqrsEvent;
  * EventInterface
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\EventSourcing
  */
 interface EventInterface extends CqrsEvent
 {

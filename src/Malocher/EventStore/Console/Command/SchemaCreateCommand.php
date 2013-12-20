@@ -15,23 +15,45 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SchemaInstallCommand
+ * Class SchemaCreateCommand
+ *
+ * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStore\Console\Command
  */
-class SchemaInstallCommand extends Command
+class SchemaCreateCommand extends Command
 {
+    /**
+     * Configure command
+     */
     protected function configure()
     {
         $this
-            ->setName('schema:install')
-            ->setDescription('Install EventStore schemas')
+            ->setName('schema:create')
+            ->setDescription('Create EventStore schemas')
+            ->addArgument('streams',InputArgument::IS_ARRAY | InputArgument::REQUIRED,'Names of streams to create')
         ;
     }
 
+    /**
+     * Execute command
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $streams = $input->getArgument('streams');
         $evenStore = $this->getHelper('es')->getEventStore();
         $adapter = $evenStore->getAdapter();
-        $output->writeln("<info>".$adapter->install()."</info>");
+        $success = $adapter->createSchema($streams);
+
+        // event dispatching ?!
+
+        if($success){
+            $output->writeln("<info>streams created</info>");
+        } else {
+            $output->writeln("<error>something went wrong</error>");
+        }
     }
 }

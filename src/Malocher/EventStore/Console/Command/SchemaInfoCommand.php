@@ -12,8 +12,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
+/**
+ * Class SchemaInfoCommand
+ *
+ * @author Manfred Weber <crafics@php.net>
+ * @package Malocher\EventStore\Console\Command
+ */
 class SchemaInfoCommand extends Command
 {
+    /**
+     * Configure Command
+     */
     protected function configure()
     {
         $this
@@ -25,6 +34,13 @@ EOT
             );
     }
 
+    /**
+     * Execute command
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool|int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 

@@ -12,6 +12,7 @@ namespace Malocher\EventStore\EventSourcing;
  * EventSourcedInterface
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\EventSourcing
  */
 interface EventSourcedInterface
 {

@@ -14,6 +14,7 @@ use Malocher\EventStore\EventStore;
  * RepositoryInterface
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\Repository
  */
 interface RepositoryInterface
 {
@@ -21,7 +22,7 @@ interface RepositoryInterface
      * Construct
      * 
      * @param EventStore $eventStore
-     * @param string     $sourceObjectType
+     * @param string     $sourceFQCN
      */
     public function __construct(EventStore $eventStore, $sourceFQCN);
     

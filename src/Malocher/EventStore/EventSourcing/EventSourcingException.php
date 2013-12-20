@@ -12,9 +12,16 @@ namespace Malocher\EventStore\EventSourcing;
  * EventSourcingException
  * 
  * @author Manfred Weber <crafics@php.net>
+ * @package Malocher\EventStore\EventSourcing
  */
 class EventSourcingException extends \Exception
 {
+    /**
+     * Throw a handler exception
+     *
+     * @param $msg
+     * @return EventSourcingException
+     */
     public static function handlerException($msg)
     {
         return new self('[EventSourcing Error] ' . $msg . "\n");

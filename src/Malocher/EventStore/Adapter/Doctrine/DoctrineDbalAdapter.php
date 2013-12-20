@@ -20,6 +20,8 @@ use JMS\Serializer\SerializerBuilder;
  * DoctrineAdapter
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Manfred Weber <crafics@php.net>
+ * @package Malocher\EventStore\Adapter\Doctrine
  */
 class DoctrineDbalAdapter implements AdapterInterface
 {
@@ -75,11 +77,36 @@ class DoctrineDbalAdapter implements AdapterInterface
     }
 
     /**
-     * install
+     * createSchema
+     *
+     * @param array $streams
+     * @return bool
      */
-    public function install()
+    public function createSchema(array $streams)
     {
-        return "Doctrine DbalAdapter ... install schema";
+        $snapshot_sql = 'CREATE TABLE snapshot '
+            . '('
+            . 'id INTEGER PRIMARY KEY,'
+            . 'sourceType TEXT,'
+            . 'sourceId  INTEGER,'
+            . 'snapshotVersion INTEGER'
+            . ')';
+        $this->getConnection()->exec($snapshot_sql);
+
+        foreach($streams as $stream){
+            $stream_sql = 'CREATE TABLE ' . $stream . ' '
+                . '('
+                . 'eventId TEXT PRIMARY KEY,'
+                . 'sourceId INTEGER,'
+                . 'sourceVersion INTEGER,'
+                . 'eventClass TEXT,'
+                . 'payload TEXT,'
+                . 'eventVersion REAL,'
+                . 'timestamp INTEGER'
+                . ')';
+            $this->getConnection()->exec($stream_sql);
+        }
+        return true;
     }
 
     /**
@@ -230,8 +257,7 @@ class DoctrineDbalAdapter implements AdapterInterface
     /**
      * Get tablename for given sourceType
      * 
-     * @param string $sourceType
-     * 
+     * @param $sourceFQCN
      * @return string
      */
     protected function getTable($sourceFQCN)
@@ -244,7 +270,11 @@ class DoctrineDbalAdapter implements AdapterInterface
         
         return $tableName;
     }
-    
+
+    /**
+     * @param $sourceFQCN
+     * @return string
+     */
     protected function getShortSourceType($sourceFQCN)
     {
         return join('', array_slice(explode('\\', $sourceFQCN), -1));

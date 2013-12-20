@@ -12,9 +12,16 @@ namespace Malocher\EventStore\Adapter;
  * AdapterException
  * 
  * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @package Malocher\EventStore\Adapter
  */
 class AdapterException extends \Exception
 {
+    /**
+     * Throw a configuration exception
+     *
+     * @param $msg
+     * @return AdapterException
+     */
     public static function configurationException($msg)
     {
         return new self('[Adapter Configuration Error] ' . $msg . "\n");

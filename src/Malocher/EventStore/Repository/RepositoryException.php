@@ -12,6 +12,7 @@ namespace Malocher\EventStore\Repository;
  * RepositoryException
  * 
  * @author Manfred Weber <crafics@php.net>
+ * @package Malocher\EventStore\Repository
  */
 class RepositoryException extends \Exception
 {
