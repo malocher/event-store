@@ -9,9 +9,11 @@
 namespace Malocher\EventStore\Configuration;
 
 use Malocher\EventStore\Adapter\AdapterInterface;
+use Malocher\EventStore\EventStore;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Malocher\EventStore\CqrsBridge\PublishEventsListener;
 /**
  * Configuration
  * 
@@ -142,5 +144,19 @@ class Configuration
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
+    }
+        
+    public function addListeners(EventStore $eventStore)
+    {
+        $this->tryAddCqrsListener($eventStore);
+        //@odo: implement listener registration via configuration
+    }
+    
+    protected function tryAddCqrsListener(EventStore $eventStore)
+    {
+        if (isset($this->config['enable_cqrs']) && $this->config['enable_cqrs']) {
+            $publishEventListener = new PublishEventsListener($this->config['cqrs_bridge']);
+            $eventStore->events()->addSubscriber($publishEventListener);
+        }
     }
 }
