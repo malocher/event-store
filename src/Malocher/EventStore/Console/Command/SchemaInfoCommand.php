@@ -12,13 +12,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
-class InfoCommand extends Command
+class SchemaInfoCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('es:info')
-            ->setDescription('display basic information')
+            ->setName('schema:info')
+            ->setDescription('Display Eventstore schema information')
             ->setHelp(<<<EOT
 the <info>%command.name%</info> shows basic information.
 EOT
