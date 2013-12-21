@@ -19,13 +19,13 @@ $directories = array(getcwd(), getcwd() . DIRECTORY_SEPARATOR . 'config');
 
 $configFile = null;
 foreach ($directories as $directory) {
-    $configFile = $directory . DIRECTORY_SEPARATOR . 'config.php';
+    $configFile = $directory . DIRECTORY_SEPARATOR . 'eventstore.config.php';
     if (file_exists($configFile)) {
         break;
     }
 }
 if ( ! file_exists($configFile)) {
-    echo 'You are missing a "config.php" or "config/config.php" file in your project.';
+    echo 'You are missing a "config.php" or "config/eventstore.config.php" file in your project.';
     exit(1);
 }
 if ( ! is_readable($configFile)) {
