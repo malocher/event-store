@@ -10,6 +10,7 @@ namespace Malocher\EventStore\Adapter\Doctrine;
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Schema;
 use Malocher\EventStore\Adapter\AdapterInterface;
 use Malocher\EventStore\Adapter\AdapterException;
 use Malocher\EventStore\EventSourcing\EventInterface;
@@ -84,28 +85,35 @@ class DoctrineDbalAdapter implements AdapterInterface
      */
     public function createSchema(array $streams)
     {
-        $snapshot_sql = 'CREATE TABLE snapshot '
-            . '('
-            . 'id INTEGER PRIMARY KEY,'
-            . 'sourceType TEXT,'
-            . 'sourceId  INTEGER,'
-            . 'snapshotVersion INTEGER'
-            . ')';
-        $this->getConnection()->exec($snapshot_sql);
+        $schema = new Schema();
+        
+        $snapshotTable = $schema->createTable('snapshot');
+        $snapshotTable->addColumn('id', 'integer', array('autoincrement' => true));
+        $snapshotTable->addColumn('sourceType', 'text');
+        $snapshotTable->addColumn('sourceId', 'string');
+        $snapshotTable->addColumn('snapshotVersion', 'integer');
+        $snapshotTable->setPrimaryKey(array("id"));
 
         foreach($streams as $stream){
-            $stream_sql = 'CREATE TABLE ' . $stream . ' '
-                . '('
-                . 'eventId TEXT PRIMARY KEY,'
-                . 'sourceId INTEGER,'
-                . 'sourceVersion INTEGER,'
-                . 'eventClass TEXT,'
-                . 'payload TEXT,'
-                . 'eventVersion REAL,'
-                . 'timestamp INTEGER'
-                . ')';
-            $this->getConnection()->exec($stream_sql);
+            
+            $streamTable = $schema->createTable($this->getTable($stream));
+            
+            $streamTable->addColumn('eventId', 'string', array("length" => 128));            
+            $streamTable->addColumn('sourceId', 'string');
+            $streamTable->addColumn('sourceVersion', 'integer');
+            $streamTable->addColumn('eventClass', 'text');
+            $streamTable->addColumn('payload', 'text');
+            $streamTable->addColumn('eventVersion', 'decimal');
+            $streamTable->addColumn('timestamp', 'integer');
+            $streamTable->setPrimaryKey(array("eventId"));
         }
+        
+        $queries = $schema->toSql($this->conn->getDatabasePlatform());
+        
+        foreach ($queries as $query) {
+            $this->getConnection()->exec($query);
+        }
+        
         return true;
     }
 

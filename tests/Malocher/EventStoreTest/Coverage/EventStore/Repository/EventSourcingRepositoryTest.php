@@ -30,7 +30,7 @@ class EventSourcingRepositoryTest extends TestCase
     protected function setUp()
     {
         $this->initEventStoreAdapter();
-        $this->createStream('user_stream');
+        $this->getEventStoreAdapter()->createSchema(array('User'));
         
         $eventStoreConfig = new Configuration();
         $eventStoreConfig->setAdapter($this->getEventStoreAdapter());

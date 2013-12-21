@@ -30,8 +30,8 @@ class DoctrineDbalAdapterTest extends TestCase
     protected function setUp() 
     {
         $this->initEventStoreAdapter();
-        $this->createStream('user_stream');
         $this->doctrineDbalAdapter = $this->getEventStoreAdapter();
+        $this->doctrineDbalAdapter->createSchema(array('user'));
     }
     
     public function testAddToStreamAndLoadStream()

@@ -35,32 +35,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         );
         
         $this->doctrineDbalAdapter = new DoctrineDbalAdapter($options);
-        
-        $snapshot_sql = 'CREATE TABLE snapshot '
-            . '('
-                . 'id INTEGER PRIMARY KEY,'
-                . 'sourceType TEXT,'
-                . 'sourceId  INTEGER,'
-                . 'snapshotVersion INTEGER'
-            . ')';
-        
-        $this->doctrineDbalAdapter->getConnection()->exec($snapshot_sql);
-    }
-    
-    protected function createStream($stream_name)
-    {
-        $setupSql = 'CREATE TABLE ' . $stream_name . ' '
-            . '('
-                . 'eventId TEXT PRIMARY KEY,'
-                . 'sourceId INTEGER,'
-                . 'sourceVersion INTEGER,'
-                . 'eventClass TEXT,'
-                . 'payload TEXT,'
-                . 'eventVersion REAL,'
-                . 'timestamp INTEGER'
-            . ')';
-        
-        $this->doctrineDbalAdapter->getConnection()->exec($setupSql);
     }
     
     /**

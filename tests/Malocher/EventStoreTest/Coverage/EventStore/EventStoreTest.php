@@ -31,7 +31,7 @@ class EventStoreTest extends TestCase
     public function setUp()
     {
         $this->initEventStoreAdapter();
-        $this->createStream('user_stream');
+        $this->getEventStoreAdapter()->createSchema(array('User'));
         
         $config = new Configuration();
         $config->setAdapter($this->getEventStoreAdapter());        
