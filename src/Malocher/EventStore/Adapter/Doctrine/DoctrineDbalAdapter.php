@@ -237,6 +237,7 @@ class DoctrineDbalAdapter implements AdapterInterface
             $this->conn->commit();
         } catch (\Exception $ex) {
             $this->conn->rollback();
+            throw $ex;
         }
     }
 
