@@ -44,9 +44,13 @@ class SchemaImportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = $input->getArgument('file');
-        $evenStore = $this->getHelper('es')->getEventStore();
-        $adapter = $evenStore->getAdapter();
-        $success = $adapter->importSchema($file);
+        $success = $this
+            ->getHelper('es')
+            ->getEventStore()
+            ->getAdapter()
+            ->importSchema($file)
+        ;
+
 
         // event dispatching ?!
 

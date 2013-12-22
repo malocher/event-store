@@ -44,9 +44,12 @@ class SchemaDropCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $streams = $input->getArgument('streams');
-        $evenStore = $this->getHelper('es')->getEventStore();
-        $adapter = $evenStore->getAdapter();
-        $success = $adapter->dropSchema($streams);
+        $success = $this
+            ->getHelper('es')
+            ->getEventStore()
+            ->getAdapter()
+            ->dropSchema($streams)
+        ;
 
         // event dispatching ?!
 
