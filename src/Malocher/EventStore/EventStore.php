@@ -84,12 +84,13 @@ class EventStore
      */
     public function __construct(Configuration $config)
     {
-        $this->adapter = $config->getAdapter();
-        $this->lookupSnapshots = $config->isSnapshotLookup();
+        $this->adapter               = $config->getAdapter();
+        $this->lookupSnapshots       = $config->isSnapshotLookup();
         $this->autoGenerateSnapshots = $config->isAutoGenerateSnapshots();
-        $this->snapshotInterval = $config->getSnapshotInterval();
-        $this->objectFactory = $config->getObjectFactory();
-        $this->eventDispatcher = $config->getEventDispatcher();
+        $this->snapshotInterval      = $config->getSnapshotInterval();
+        $this->repositoryMap         = $config->getRepositoryMap();
+        $this->objectFactory         = $config->getObjectFactory();
+        $this->eventDispatcher       = $config->getEventDispatcher();
         
                 
         if ($this->autoGenerateSnapshots) {

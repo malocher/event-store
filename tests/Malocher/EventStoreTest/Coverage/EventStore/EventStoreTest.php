@@ -99,6 +99,26 @@ class EventStoreTest extends TestCase
         $this->assertSame($repo, $sameRepo);
     }
     
+    public function testGetCustomRepository()
+    {
+        $config = new Configuration();
+        $config->setAdapter($this->getEventStoreAdapter());  
+        $config->addRepositoryMapping(
+            'Malocher\EventStoreTest\Coverage\Mock\User', 
+            'Malocher\EventStoreTest\Coverage\Mock\MockedRepository'
+        );
+        $this->eventStore = new EventStore($config);
+        
+        $repo = $this->eventStore->getRepository(
+            'Malocher\EventStoreTest\Coverage\Mock\User'
+        );
+        
+        $this->assertInstanceOf(
+            'Malocher\EventStoreTest\Coverage\Mock\MockedRepository',
+            $repo
+        );
+    }
+    
     public function testDispatchPostPersistEvent()
     {
         $factory = new EventSourcedObjectFactory();
