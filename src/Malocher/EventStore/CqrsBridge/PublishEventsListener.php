@@ -29,6 +29,7 @@ class PublishEventsListener implements EventSubscriberInterface
         //@todo: Implement more flexible configuration options
         $this->cqrsGate = $configuration['gate'];
     }
+    
     public static function getSubscribedEvents()
     {
         return array(

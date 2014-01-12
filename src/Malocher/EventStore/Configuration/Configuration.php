@@ -35,31 +35,49 @@ class Configuration
      */
     public function __construct(array $config = null)
     {
-        if (is_array($config)) {
+        if (is_array($config)) {            
             $this->config = $config;
+            
+            if (isset($config['repository_map'])) {
+                //Set map again to trigger validation
+                $this->setRepositoryMap($config['repository_map']);
+            }
         }
-    }
-
-    /**
-     * Check if configuration is valid
-     *
-     * @todo implement
-     * @return bool
-     */
-    public function validateConfiguration()
-    {
     }
     
     /**
-     * 
      * @return AdapterInterface
+     * @throws ConfigurationException
      */
     public function getAdapter()
     {
         if (is_null($this->adapter)) {
-            $adapterConfig = $this->config['adapter'];
-            foreach ($adapterConfig as $adapterClass => $adapterConfig) {
-                $this->adapter = new $adapterClass($adapterConfig);
+            if (!isset($this->config['adapter'])) {
+                throw ConfigurationException::configurationError('Missing key adapter');
+            }
+            
+            if (!is_array($this->config['adapter'])) {
+                throw ConfigurationException::configurationError('Adapter configuration must be an array');
+            }
+            
+            $adapterClass = key($this->config['adapter']);
+            $adapterConfig = current($this->config['adapter']);
+            
+            if (!is_string($adapterClass)) {
+                throw ConfigurationException::configurationError('AdapterClass must be a string');
+            }
+            
+            if (!class_exists($adapterClass)) {
+                throw ConfigurationException::configurationError(sprintf(
+                    'Unknown AdapterClass: %s',
+                    $adapterClass
+                ));
+            }
+            
+            $this->adapter = new $adapterClass($adapterConfig); 
+            
+            if (!$this->adapter instanceof AdapterInterface) {
+                throw ConfigurationException::configurationError('EventStore Adapter must be instance of Malocher\EventStore\Adapter\AdapterInterface');
             }
         } 
         
@@ -120,6 +138,44 @@ class Configuration
     }
     
     /**
+     * @param array $map
+     */
+    public function setRepositoryMap(array $map)
+    {
+        foreach ($map as $sourceFQCN => $repositoryFQCN) {
+            $this->addRepositoryMapping($sourceFQCN, $repositoryFQCN);
+        }
+    }
+    
+    /**
+     * @param string $sourceFQCN
+     * @param string $repositoryFQCN
+     * @throws ConfigurationException
+     */
+    public function addRepositoryMapping($sourceFQCN, $repositoryFQCN)
+    {
+        if (!class_exists($sourceFQCN)) {
+            throw ConfigurationException::configurationError(sprintf(
+                'Unknown SourceClass: %s',
+                $sourceFQCN
+            ));
+        }
+        
+        if (!class_exists($repositoryFQCN)) {
+            throw ConfigurationException::configurationError(sprintf(
+                'Unknown RepositoryClass: %s',
+                $repositoryFQCN
+            ));
+        }
+        
+        if (!isset($this->config['repository_map']) || !is_array($this->config['repository_map'])) {
+            $this->config['repository_map'] = array();
+        }
+        
+        $this->config['repository_map'][$sourceFQCN] = $repositoryFQCN;
+    }
+    
+    /**
      * 
      * @return EventSourcedObjectFactory
      */
@@ -130,9 +186,24 @@ class Configuration
             if (isset($this->config['object_factory'])) {
                 $objectFactoryConfig = $this->config['object_factory'];
 
-                foreach ($objectFactoryConfig as $objectFactoryClass => $config) {
-                    $this->objectFactory = new $objectFactoryClass($config);
+                if (!is_array($objectFactoryConfig)) {
+                    throw ConfigurationException::configurationError('ObjectFactory configuration must be an array');
                 }
+                
+                list($objectFactoryClass, $config) = each($objectFactoryConfig);
+                
+                if (!is_string($objectFactoryClass)) {
+                    throw ConfigurationException::configurationError('ObjectFactoryClass must be a string');
+                }
+
+                if (!class_exists($objectFactoryClass)) {
+                    throw ConfigurationException::configurationError(sprintf(
+                        'Unknown ObjectFactory class: %s',
+                        $objectFactoryClass
+                    ));
+                }
+                
+                $this->objectFactory = new $objectFactoryClass($config);
             } else {
                 $this->objectFactory = new EventSourcedObjectFactory();
             }
@@ -157,8 +228,35 @@ class Configuration
     public function getEventDispatcher()
     {
         if (is_null($this->eventDispatcher)) {
-            $this->eventDispatcher = (isset($this->config['event_dispatcher']))? 
-                $this->config['event_dispatcher'] : new EventDispatcher();
+            
+            if (isset($this->config['event_dispatcher'])) {
+                $eventDispatcherConfig = $this->config['event_dispatcher'];
+
+                if (!is_array($eventDispatcherConfig)) {
+                    throw ConfigurationException::configurationError('EventDispatcher configuration must be an array');
+                }
+
+                list($eventDispatcherClass, $config) = each($eventDispatcherConfig);
+
+                if (!is_string($eventDispatcherClass)) {
+                    throw ConfigurationException::configurationError('EventDispatcher class must be a string');
+                }
+
+                if (!class_exists($eventDispatcherClass)) {
+                    throw ConfigurationException::configurationError(sprintf(
+                        'Unknown EventDispatcher class: %s',
+                        $eventDispatcherClass
+                    ));
+                }
+
+                if (!empty($config)) {
+                    $this->eventDispatcher = new $eventDispatcherClass($config);
+                } else {
+                    $this->eventDispatcher = new $eventDispatcherClass();
+                }
+            } else {
+                $this->eventDispatcher = new EventDispatcher();
+            }
         }
         
         return $this->eventDispatcher;

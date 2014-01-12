@@ -15,10 +15,12 @@ namespace Malocher\EventStore\Configuration;
  */
 class ConfigurationException extends \Exception
 {
-    /*
-    public static function exampleException($msg)
+    /**
+     * @param string $msg
+     * @return ConfigurationException
+     */
+    public static function configurationError($msg)
     {
         return new self('[Configuration Error] ' . $msg . "\n");
     }
-    */
 }
