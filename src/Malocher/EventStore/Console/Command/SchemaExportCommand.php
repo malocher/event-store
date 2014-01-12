@@ -46,9 +46,12 @@ class SchemaExportCommand extends Command
     {
         $snapshots_only = $input->getOption('snapshots-only');
         $file = $input->getArgument('file');
-        $evenStore = $this->getHelper('es')->getEventStore();
-        $adapter = $evenStore->getAdapter();
-        $success = $adapter->exportSchema($file,$snapshots_only);
+        $success = $this
+            ->getHelper('es')
+            ->getEventStore()
+            ->getAdapter()
+            ->exportSchema($file,$snapshots_only)
+        ;
 
         // event dispatching ?!
 

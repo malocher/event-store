@@ -44,9 +44,13 @@ class SchemaCreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $streams = $input->getArgument('streams');
-        $evenStore = $this->getHelper('es')->getEventStore();
-        $adapter = $evenStore->getAdapter();
-        $success = $adapter->createSchema($streams);
+
+        $success = $this
+            ->getHelper('es')
+            ->getEventStore()
+            ->getAdapter()
+            ->createSchema($streams)
+        ;
 
         // event dispatching ?!
 
