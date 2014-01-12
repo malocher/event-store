@@ -95,8 +95,6 @@ class EventStore
         if ($this->autoGenerateSnapshots) {
             $this->lookupSnapshots = true;
         }
-        
-        $config->addListeners($this);
     }
 
     /**

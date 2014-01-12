@@ -266,18 +266,4 @@ class Configuration
     {
         $this->eventDispatcher = $eventDispatcher;
     }
-        
-    public function addListeners(EventStore $eventStore)
-    {
-        $this->tryAddCqrsListener($eventStore);
-        //@odo: implement listener registration via configuration
-    }
-    
-    protected function tryAddCqrsListener(EventStore $eventStore)
-    {
-        if (isset($this->config['enable_cqrs']) && $this->config['enable_cqrs']) {
-            $publishEventListener = new PublishEventsListener($this->config['cqrs_bridge']);
-            $eventStore->events()->addSubscriber($publishEventListener);
-        }
-    }
 }
