@@ -197,7 +197,7 @@ class EventStore
      * @param string $sourceFQCN
      * @param string $sourceId
      * 
-     * @return EventSourcedInterface
+     * @return EventSourcedInterface|null
      */        
     public function find($sourceFQCN, $sourceId)
     {
@@ -214,6 +214,10 @@ class EventStore
         }
         
         $historyEvents = $this->adapter->loadStream($sourceFQCN, $sourceId, $snapshotVersion);
+        
+        if (count($historyEvents) === 0) {
+            return null;
+        }
         
         return $this->objectFactory->create($sourceFQCN, $sourceId, $historyEvents);
     }

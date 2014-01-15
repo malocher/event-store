@@ -31,7 +31,7 @@ interface RepositoryInterface
      * 
      * @param string $sourceId
      * 
-     * @return EventSourcedInterface
+     * @return EventSourcedInterface|null
      */
     public function find($sourceId);
     

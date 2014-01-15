@@ -64,6 +64,16 @@ class EventStoreTest extends TestCase
         $this->assertEquals($user->getEmail(), $checkUser->getEmail());
     }
     
+    public function testFindNothing()
+    {
+        $checkUser = $this->eventStore->find(
+            'Malocher\EventStoreTest\Coverage\Mock\User', 
+            '1'
+        );
+        
+        $this->assertNull($checkUser);
+    }
+    
     public function testIdentityMap()
     {
         $factory = new EventSourcedObjectFactory();
