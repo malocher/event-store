@@ -19,11 +19,22 @@ class AdapterException extends \Exception
     /**
      * Throw a configuration exception
      *
-     * @param $msg
+     * @param string $msg
      * @return AdapterException
      */
     public static function configurationException($msg)
     {
         return new self('[Adapter Configuration Error] ' . $msg . "\n");
+    }
+    
+    /**
+     * Throw an unsupported feature exception
+     * 
+     * @param string $msg
+     * @return AdapterException
+     */
+    public static function unsupportedFeatureException($msg)
+    {
+        return new self('[Adapter unsupported Feature] ' . $msg . "\n");
     }
 }

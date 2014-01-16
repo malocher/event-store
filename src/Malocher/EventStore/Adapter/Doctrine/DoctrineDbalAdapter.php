@@ -12,6 +12,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Malocher\EventStore\Adapter\AdapterInterface;
+use Malocher\EventStore\Adapter\Feature\TransactionFeatureInterface;
 use Malocher\EventStore\Adapter\AdapterException;
 use Malocher\EventStore\EventSourcing\EventInterface;
 use Malocher\EventStore\EventSourcing\SnapshotEvent;
@@ -24,7 +25,7 @@ use JMS\Serializer\SerializerBuilder;
  * @author Manfred Weber <crafics@php.net>
  * @package Malocher\EventStore\Adapter\Doctrine
  */
-class DoctrineDbalAdapter implements AdapterInterface
+class DoctrineDbalAdapter implements AdapterInterface, TransactionFeatureInterface
 {
     /**
      * Doctrine DBAL connection
@@ -261,6 +262,21 @@ class DoctrineDbalAdapter implements AdapterInterface
         }
         
         return 0;
+    }
+    
+    public function beginTransaction()
+    {
+        $this->conn->beginTransaction();
+    }
+
+    public function commit()
+    {
+        $this->conn->commit();
+    }
+
+    public function rollback()
+    {
+        $this->conn->rollBack();
     }
 
     /**

@@ -157,4 +157,65 @@ class EventStoreTest extends TestCase
         
         $this->assertEquals($check, $persistedEventList);
     }
+    
+    public function testBeginTransactionAndCommit()
+    {
+        $this->eventStore->beginTransaction();
+        
+        $factory = new EventSourcedObjectFactory();
+        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        
+        $user->changeName('Malocher');
+        $user->changeEmail('my.email@getmalocher.org');
+        
+        $persistedEventList = array();        
+        
+        $this->eventStore->events()->addListener(
+            PostPersistEvent::NAME, 
+            function(PostPersistEvent $e) use (&$persistedEventList) {
+                foreach ($e->getPersistedEvents() as $persistedEvent) {
+                    $persistedEventList[] = get_class($persistedEvent);
+                }
+            }
+        );
+        
+        $this->eventStore->save($user);
+        
+        $this->eventStore->commit();
+        
+        $check = array(
+            'Malocher\EventStoreTest\Coverage\Mock\Event\UserNameChangedEvent',
+            'Malocher\EventStoreTest\Coverage\Mock\Event\UserEmailChangedEvent'
+        );
+        
+        $this->assertEquals($check, $persistedEventList);
+    }
+    
+    public function testBeginTransactionAndRollback()
+    {
+        $this->eventStore->beginTransaction();
+        
+        $factory = new EventSourcedObjectFactory();
+        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        
+        $user->changeName('Malocher');
+        $user->changeEmail('my.email@getmalocher.org');
+        
+        $persistedEventList = array();        
+        
+        $this->eventStore->events()->addListener(
+            PostPersistEvent::NAME, 
+            function(PostPersistEvent $e) use (&$persistedEventList) {
+                foreach ($e->getPersistedEvents() as $persistedEvent) {
+                    $persistedEventList[] = get_class($persistedEvent);
+                }
+            }
+        );
+        
+        $this->eventStore->save($user);
+        
+        $this->eventStore->rollback();
+        
+        $this->assertEmpty($persistedEventList);
+    }
 }

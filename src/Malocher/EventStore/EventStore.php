@@ -9,6 +9,8 @@
 namespace Malocher\EventStore;
 
 use Malocher\EventStore\Adapter\AdapterInterface;
+use Malocher\EventStore\Adapter\Feature\TransactionFeatureInterface;
+use Malocher\EventStore\Adapter\AdapterException;
 use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventSourcing\EventSourcedInterface;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
@@ -76,6 +78,16 @@ class EventStore
      * @var EventDispatcherInterface 
      */
     protected $eventDispatcher;
+    
+    /**
+     * @var boolean
+     */
+    protected $inTransaction = false;
+    
+    /**
+     * @var array
+     */
+    protected $pendingEvents = array();
 
     /**
      * Construct
@@ -180,7 +192,8 @@ class EventStore
                 );
             }
             
-            $this->events()->dispatch(PostPersistEvent::NAME, $postPersistEvent);
+            $this->addPendingEvent($postPersistEvent);
+            $this->tryDispatchPostPersistEvents();
         }
         
         $hash = $this->getIdentityHash(
@@ -233,6 +246,53 @@ class EventStore
     }
     
     /**
+     * Begin transaction
+     * 
+     * @throws AdapterException If adapter does not support transactions
+     */
+    public function beginTransaction()
+    {
+        if (!$this->adapter instanceof TransactionFeatureInterface) {
+            throw AdapterException::unsupportedFeatureException('TransactionFeature');
+        }
+        
+        $this->inTransaction = true;
+        $this->adapter->beginTransaction();
+    }
+    
+    /**
+     * Commit transaction
+     * 
+     * @throws AdapterException If adapter does not support transactions
+     */
+    public function commit()
+    {
+        if (!$this->adapter instanceof TransactionFeatureInterface) {
+            throw AdapterException::unsupportedFeatureException('TransactionFeature');
+        }
+        
+        $this->adapter->commit();
+        $this->inTransaction = false;
+        $this->tryDispatchPostPersistEvents();
+    }
+    
+    /**
+     * Rollback transaction
+     * 
+     * @throws AdapterException If adapter does not support transactions
+     */
+    public function rollback()
+    {
+        if (!$this->adapter instanceof TransactionFeatureInterface) {
+            throw AdapterException::unsupportedFeatureException('TransactionFeature');
+        }
+        
+        $this->adapter->rollback();
+        $this->inTransaction = false;
+        $this->pendingEvents = array();
+    }
+    
+    /**
      * Get hash to identify EventSourcedObject in the IdentityMap
      * 
      * @param string $sourceFQCN
@@ -243,5 +303,29 @@ class EventStore
     protected function getIdentityHash($sourceFQCN, $sourceId)
     {        
         return $sourceFQCN . '::' . $sourceId;
+    }
+    
+    /**
+     * @param PostPersistEvent $event
+     */
+    protected function addPendingEvent(PostPersistEvent $event)
+    {
+        $this->pendingEvents[] = $event;
+    }
+
+
+    /**
+     * Events are only dispatched if the event store has no running transaction
+     */
+    protected function tryDispatchPostPersistEvents()
+    {
+        if (!$this->inTransaction) {
+            $events = $this->pendingEvents;
+            $this->pendingEvents = array();
+            
+            foreach ($events as $event) {
+                $this->events()->dispatch(PostPersistEvent::NAME, $event);
+            }
+        }
     }
 }
