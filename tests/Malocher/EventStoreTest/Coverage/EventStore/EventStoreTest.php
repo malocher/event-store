@@ -12,6 +12,7 @@ use Malocher\EventStore\Configuration\Configuration;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Malocher\EventStore\EventStore;
 use Malocher\EventStore\StoreEvent\PostPersistEvent;
+use Malocher\EventStore\StoreEvent\PreCommitEvent;
 use Malocher\EventStoreTest\TestCase;
 
 use Malocher\EventStoreTest\Coverage\Mock\User;
@@ -168,7 +169,7 @@ class EventStoreTest extends TestCase
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');
         
-        $persistedEventList = array();        
+        $persistedEventList = array();  
         
         $this->eventStore->events()->addListener(
             PostPersistEvent::NAME, 
@@ -217,5 +218,43 @@ class EventStoreTest extends TestCase
         $this->eventStore->rollback();
         
         $this->assertEmpty($persistedEventList);
+    }
+    
+    public function testDispatchPreCommitEvent()
+    {
+        $this->eventStore->beginTransaction();
+        
+        $factory = new EventSourcedObjectFactory();
+        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        
+        $user->changeName('Malocher');
+        $user->changeEmail('my.email@getmalocher.org');
+        
+        $persistedEventList = array();  
+        
+        $this->eventStore->events()->addListener(
+            PostPersistEvent::NAME, 
+            function(PostPersistEvent $e) use (&$persistedEventList) {
+                foreach ($e->getPersistedEvents() as $persistedEvent) {
+                    $persistedEventList[] = get_class($persistedEvent);
+                }
+            }
+        );
+        
+        $this->eventStore->events()->addListener(
+            PreCommitEvent::NAME, 
+            function(PreCommitEvent $e) use ($user) {
+                $e->getEventStore()->save($user);
+            }
+        );
+        
+        $this->eventStore->commit();
+        
+        $check = array(
+            'Malocher\EventStoreTest\Coverage\Mock\Event\UserNameChangedEvent',
+            'Malocher\EventStoreTest\Coverage\Mock\Event\UserEmailChangedEvent'
+        );
+        
+        $this->assertEquals($check, $persistedEventList);
     }
 }

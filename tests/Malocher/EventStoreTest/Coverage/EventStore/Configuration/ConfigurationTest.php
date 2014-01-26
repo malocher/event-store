@@ -134,39 +134,6 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($map, $config->getRepositoryMap());
     }
     
-    public function testDefaultGetObjectFactory()
-    {
-        $config = new Configuration();
-        
-        $this->assertInstanceOf('Malocher\EventStore\EventSourcing\EventSourcedObjectFactory', $config->getObjectFactory());
-    }
-    
-    public function testGetObjectFactory()
-    {
-        $config = new Configuration(array(
-            'object_factory' => array(
-                'Malocher\EventStoreTest\Coverage\Mock\MockedObjectFactory' => array()
-            )
-        ));
-        
-        $this->assertInstanceOf('Malocher\EventStoreTest\Coverage\Mock\MockedObjectFactory', $config->getObjectFactory());
-    }
-    
-    public function testSetObjectFactory()
-    {
-        $config = new Configuration(array(
-            'object_factory' => array(
-                'Malocher\EventStoreTest\Coverage\Mock\MockedObjectFactory' => array()
-            )
-        ));
-        
-        $objectFactory = new EventSourcedObjectFactory();
-        $config->setObjectFactory($objectFactory);
-        
-        //Ignore array config and return set factory
-        $this->assertSame($objectFactory, $config->getObjectFactory());
-    }
-    
     public function testDefaultGetEventDispatcher()
     {
         $config = new Configuration();

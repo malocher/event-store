@@ -16,6 +16,7 @@ use Malocher\EventStore\EventSourcing\EventSourcedInterface;
 use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Malocher\EventStore\Repository\RepositoryInterface;
 use Malocher\EventStore\StoreEvent\PostPersistEvent;
+use Malocher\EventStore\StoreEvent\PreCommitEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * EventStore 
@@ -170,6 +171,9 @@ class EventStore
         $pendingEvents = $eventSourcedObject->getPendingEvents();
         
         if (count($pendingEvents)) {
+            
+            
+            
             $this->adapter->addToStream(
                 $sourceFQCN, 
                 $eventSourcedObject->getId(), 
@@ -271,6 +275,7 @@ class EventStore
             throw AdapterException::unsupportedFeatureException('TransactionFeature');
         }
         
+        $this->events()->dispatch(PreCommitEvent::NAME, new PreCommitEvent($this));
         $this->adapter->commit();
         $this->inTransaction = false;
         $this->tryDispatchPostPersistEvents();
