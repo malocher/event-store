@@ -75,7 +75,7 @@ class ProtectedAccessDecorator extends EventSourcedObject
         return $this->managedEventSourcedObject->getPendingEvents();
     }
 
-    public function registerHandlers()
+    protected function registerHandlers()
     {
         //empty method to satisfy abstract contract
     }

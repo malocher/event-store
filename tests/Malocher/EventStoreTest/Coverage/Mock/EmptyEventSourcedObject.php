@@ -31,7 +31,7 @@ class EmptyEventSourcedObject extends EventSourcedObject
         );
     }
 
-    public function registerHandlers()
+    protected function registerHandlers()
     {
         
     }

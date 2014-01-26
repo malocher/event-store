@@ -53,7 +53,7 @@ abstract class EventSourcedObject
      * 
      * @throws EventSourcingException
      */
-    abstract function registerHandlers();
+    abstract protected function registerHandlers();
 
     /**
      * Get the surrogate id used by the EventStore to identify the Object

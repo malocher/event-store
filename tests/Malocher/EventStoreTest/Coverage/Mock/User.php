@@ -31,7 +31,7 @@ class User extends EventSourcedObject
     /**
      * @return void
      */
-    public function registerHandlers()
+    protected function registerHandlers()
     {
         $this->handlers['UserNameChangedEvent'] = 'onNameChanged';
         $this->handlers['UserEmailChangedEvent'] = 'onEmailChanged';
