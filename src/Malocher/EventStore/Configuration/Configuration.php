@@ -9,11 +9,8 @@
 namespace Malocher\EventStore\Configuration;
 
 use Malocher\EventStore\Adapter\AdapterInterface;
-use Malocher\EventStore\EventStore;
-use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Malocher\EventStore\CqrsBridge\PublishEventsListener;
 /**
  * Configuration
  * 
@@ -173,53 +170,6 @@ class Configuration
         }
         
         $this->config['repository_map'][$sourceFQCN] = $repositoryFQCN;
-    }
-    
-    /**
-     * 
-     * @return EventSourcedObjectFactory
-     */
-    public function getObjectFactory()
-    {
-        if (is_null($this->objectFactory)) 
-        {
-            if (isset($this->config['object_factory'])) {
-                $objectFactoryConfig = $this->config['object_factory'];
-
-                if (!is_array($objectFactoryConfig)) {
-                    throw ConfigurationException::configurationError('ObjectFactory configuration must be an array');
-                }
-                
-                list($objectFactoryClass, $config) = each($objectFactoryConfig);
-                
-                if (!is_string($objectFactoryClass)) {
-                    throw ConfigurationException::configurationError('ObjectFactoryClass must be a string');
-                }
-
-                if (!class_exists($objectFactoryClass)) {
-                    throw ConfigurationException::configurationError(sprintf(
-                        'Unknown ObjectFactory class: %s',
-                        $objectFactoryClass
-                    ));
-                }
-                
-                $this->objectFactory = new $objectFactoryClass($config);
-            } else {
-                $this->objectFactory = new EventSourcedObjectFactory();
-            }
-        }
-        
-        return $this->objectFactory;
-    }
-
-    /**
-     * Set the object factory
-     *
-     * @param EventSourcedObjectFactory $objectFactory
-     */
-    public function setObjectFactory(EventSourcedObjectFactory $objectFactory)
-    {
-        $this->objectFactory = $objectFactory;
     }
     
     /**

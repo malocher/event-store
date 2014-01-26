@@ -14,7 +14,7 @@ namespace Malocher\EventStore\EventSourcing;
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  * @package Malocher\EventStore\EventSourcing
  */
-class EventSourcedObject implements EventSourcedInterface
+abstract class EventSourcedObject
 {
     /**
      * Identifier
@@ -44,34 +44,46 @@ class EventSourcedObject implements EventSourcedInterface
      * 
      * @var EventInterface[] 
      */
-    protected $pendingEvents = array();
-
+    protected $pendingEvents = array();    
+    
     /**
-     * Construct
+     * Hookpoint to register event handlers
      * 
-     * @param string           $id
-     * @param EventInterface[] $historyEvents
+     * Method is called during construct
+     * 
+     * @throws EventSourcingException
      */
-    public function __construct($id, array $historyEvents = null)
-    {
-        $this->id = $id;   
-        
-        $this->handlers['SnapshotEvent'] = 'onSnapshot';
-        $this->registerHandlers(); 
-        
-        if (is_array($historyEvents)) {
-            $this->replay($historyEvents);
-        }
-    }
+    abstract function registerHandlers();
 
     /**
-     * Get the identifier
+     * Get the surrogate id used by the EventStore to identify the Object
      * 
      * @return string
      */
-    public function getId()
+    protected function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * Set the surrogate id used by the EventStore to identify the Object
+     * 
+     * @param string $id
+     */
+    protected function setId($id)
+    {
+        $this->id = $id;
+    }
+    
+    /**    
+     * @param string $id
+     * @param array $historyEvents
+     */
+    protected function initializeFromHistory($id, array $historyEvents)
+    {
+        $this->setId($id);
+        $this->handlers['SnapshotEvent'] = 'onSnapshot';
+        $this->replay($historyEvents);
     }
 
     /**
@@ -79,7 +91,7 @@ class EventSourcedObject implements EventSourcedInterface
      * 
      * @return EventInterface[]
      */
-    public function getPendingEvents()
+    protected function getPendingEvents()
     {
         $pendingEvents = $this->pendingEvents;
         
@@ -93,7 +105,7 @@ class EventSourcedObject implements EventSourcedInterface
      * 
      * @return SnapshotEvent
      */
-    public function getSnapshot()
+    protected function getSnapshot()
     {
         $payload = $this->getSnapshotPayload();
         
@@ -108,18 +120,6 @@ class EventSourcedObject implements EventSourcedInterface
     }
     
     /**
-     * Hookpoint to register event handlers
-     * 
-     * Method is called during construct
-     * 
-     * @throws EventSourcingException
-     */
-    protected function registerHandlers()
-    {
-        throw EventSourcingException::handlerException('No handlers registered!');
-    }
-    
-    /**
      * Replay past events
      * 
      * @param EventInterface[] $historyEvents
@@ -128,6 +128,8 @@ class EventSourcedObject implements EventSourcedInterface
      */
     protected function replay(array $historyEvents)
     {
+        $this->registerHandlers();
+        
         foreach ($historyEvents as $pastEvent) {
             $handler = $this->handlers[$this->determineEventName($pastEvent)];
             
@@ -144,7 +146,34 @@ class EventSourcedObject implements EventSourcedInterface
      */
     protected function update(EventInterface $e)
     {
-        $handler = $this->handlers[$this->determineEventName($e)];
+        //lazy register handlers, if not done during construct
+        if (empty($this->handlers)) {
+            $this->registerHandlers();
+        }
+        
+        $eventName = $this->determineEventName($e);
+        
+        if (!isset($this->handlers[$eventName])) {
+            throw EventSourcingException::handlerException(
+                sprintf(
+                    'No handler method registered for Event: %s!',
+                    $eventName
+                )
+            );
+        }
+        
+        $handler = $this->handlers[$eventName];
+        
+        if (!method_exists($this, $handler)) {
+            throw EventSourcingException::handlerException(
+                sprintf(
+                    'Handler: %s is no valid method of class: %s!',
+                    $handler,
+                    get_class($this)
+                )
+            );
+        }
+        
         $this->{$handler}($e);
         
         $e->setSourceId($this->getId());

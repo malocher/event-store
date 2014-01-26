@@ -30,4 +30,9 @@ class EmptyEventSourcedObject extends EventSourcedObject
             new Event\Prop1ChangedEvent(array('oldProp1' => $this->prop1, 'newProp1' => $newProp1))
         );
     }
+
+    public function registerHandlers()
+    {
+        
+    }
 }

@@ -9,9 +9,9 @@
 namespace Malocher\EventStoreTest\Coverage\EventStore\Repository;
 
 use Malocher\EventStore\Repository\EventSourcingRepository;
-use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Malocher\EventStore\EventStore;
 use Malocher\EventStore\Configuration\Configuration;
+use Malocher\EventStoreTest\Coverage\Mock\User;
 use Malocher\EventStoreTest\TestCase;
 /**
  * EventSourcingRepositoryTest
@@ -43,8 +43,7 @@ class EventSourcingRepositoryTest extends TestCase
     
     public function testSaveAndFind()
     {
-        $factory = new EventSourcedObjectFactory();
-        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        $user = new User('1');
         
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');

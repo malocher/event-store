@@ -12,8 +12,8 @@ use Malocher\EventStore\Adapter\AdapterInterface;
 use Malocher\EventStore\Adapter\Feature\TransactionFeatureInterface;
 use Malocher\EventStore\Adapter\AdapterException;
 use Malocher\EventStore\Configuration\Configuration;
-use Malocher\EventStore\EventSourcing\EventSourcedInterface;
-use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
+use Malocher\EventStore\EventSourcing\EventSourcedObject;
+use Malocher\EventStore\EventSourcing\ProtectedAccessDecorator;
 use Malocher\EventStore\Repository\RepositoryInterface;
 use Malocher\EventStore\StoreEvent\PostPersistEvent;
 use Malocher\EventStore\StoreEvent\PreCommitEvent;
@@ -68,12 +68,6 @@ class EventStore
      * @var array 
      */
     protected $repositoryMap = array();
-
-    /**
-     *
-     * @var EventSourcedObjectFactory 
-     */
-    protected $objectFactory;
     
     /**
      * @var EventDispatcherInterface 
@@ -102,7 +96,6 @@ class EventStore
         $this->autoGenerateSnapshots = $config->isAutoGenerateSnapshots();
         $this->snapshotInterval      = $config->getSnapshotInterval();
         $this->repositoryMap         = $config->getRepositoryMap();
-        $this->objectFactory         = $config->getObjectFactory();
         $this->eventDispatcher       = $config->getEventDispatcher();
         
                 
@@ -160,23 +153,24 @@ class EventStore
     /**
      * Save given EventSourcedObject
      * 
-     * @param EventSourcedInterface $eventSourcedObject
+     * @param EventSourcedObject $eventSourcedObject
      * 
      * @return void
      */
-    public function save(EventSourcedInterface $eventSourcedObject)
+    public function save(EventSourcedObject $eventSourcedObject)
     {
         $sourceFQCN = get_class($eventSourcedObject);
         
-        $pendingEvents = $eventSourcedObject->getPendingEvents();
+        $decoratedObject = new ProtectedAccessDecorator();
+        $decoratedObject->manageObject($eventSourcedObject);
+        
+        $pendingEvents = $decoratedObject->getPendingEvents();
         
         if (count($pendingEvents)) {
             
-            
-            
             $this->adapter->addToStream(
                 $sourceFQCN, 
-                $eventSourcedObject->getId(), 
+                $decoratedObject->getId(), 
                 $pendingEvents
             );
             
@@ -188,10 +182,10 @@ class EventStore
             if ($this->autoGenerateSnapshots 
                 && $this->snapshotInterval > 0 
                 && $lastEvent->getSourceVersion() % $this->snapshotInterval === 0) {
-                $snapshotEvent = $eventSourcedObject->getSnapshot();
+                $snapshotEvent = $decoratedObject->getSnapshot();
                 $this->adapter->createSnapshot(
                     $sourceFQCN, 
-                    $eventSourcedObject->getId(), 
+                    $decoratedObject->getId(), 
                     $snapshotEvent
                 );
             }
@@ -202,7 +196,7 @@ class EventStore
         
         $hash = $this->getIdentityHash(
             get_class($eventSourcedObject), 
-            $eventSourcedObject->getId()
+            $decoratedObject->getId()
         );
         
         $this->identityMap[$hash] = $eventSourcedObject;
@@ -214,7 +208,7 @@ class EventStore
      * @param string $sourceFQCN
      * @param string $sourceId
      * 
-     * @return EventSourcedInterface|null
+     * @return EventSourcedObject|null
      */        
     public function find($sourceFQCN, $sourceId)
     {
@@ -236,7 +230,10 @@ class EventStore
             return null;
         }
         
-        return $this->objectFactory->create($sourceFQCN, $sourceId, $historyEvents);
+        $decoratedObject = new ProtectedAccessDecorator();
+        $decoratedObject->constructManagedObjectFromHistory($sourceFQCN, $sourceId, $historyEvents);
+        
+        return $decoratedObject->getManagedObject();
     }
     
     /**

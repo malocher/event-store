@@ -9,7 +9,7 @@
 namespace Malocher\EventStore\StoreEvent;
 
 use Symfony\Component\EventDispatcher\Event;
-use Malocher\EventStore\EventSourcing\EventSourcedInterface;
+use Malocher\EventStore\EventSourcing\EventSourcedObject;
 use Malocher\EventStore\EventSourcing\EventInterface;
 /**
  *  PostPersistEvent
@@ -33,10 +33,10 @@ class PostPersistEvent extends Event
     /**
      * Construct
      * 
-     * @param EventSourcedInterface $eventSourcedObject
-     * @param EventInterface[]      $persistedEvents
+     * @param EventSourcedObject $eventSourcedObject
+     * @param EventInterface[]   $persistedEvents
      */
-    public function __construct(EventSourcedInterface $eventSourcedObject, array $persistedEvents)
+    public function __construct(EventSourcedObject $eventSourcedObject, array $persistedEvents)
     {
         $this->eventSourcedObject = $eventSourcedObject;
         $this->persistedEvents = $persistedEvents;
@@ -65,7 +65,7 @@ class PostPersistEvent extends Event
     /**
      * Get the EventSourcedObject
      * 
-     * @return EventSourcedInterface
+     * @return EventSourcedObject
      */
     public function getSource()
     {

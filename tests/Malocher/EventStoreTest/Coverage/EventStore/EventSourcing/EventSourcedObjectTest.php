@@ -12,6 +12,7 @@ use Malocher\EventStoreTest\Coverage\Mock\EmptyEventSourcedObject;
 use Malocher\EventStoreTest\Coverage\Mock\User;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserNameChangedEvent;
 use Malocher\EventStoreTest\Coverage\Mock\Event\UserEmailChangedEvent;
+use Malocher\EventStore\EventSourcing\ProtectedAccessDecorator;
 use Malocher\EventStoreTest\TestCase;
 
 /**
@@ -29,19 +30,22 @@ class EventSourcedObjectTest extends TestCase
     
     protected function setUp() 
     {
-        $this->eventSourcedObject = new User(1);
+        $this->eventSourcedObject = new User('1');
     }
 
     public function testGetId()
     {
-        $this->assertEquals( 1, $this->eventSourcedObject->getId() );
+        $this->assertEquals( '1', $this->eventSourcedObject->getId() );
     }
 
     public function testGetPendingEvents()
     {
         $this->eventSourcedObject->changeName('Malocher');
         
-        $events = $this->eventSourcedObject->getPendingEvents();
+        $decorator = new ProtectedAccessDecorator();
+        $decorator->manageObject($this->eventSourcedObject);
+        
+        $events = $decorator->getPendingEvents();
         
         $this->assertEquals(1, count($events));
         
@@ -52,7 +56,7 @@ class EventSourcedObjectTest extends TestCase
         $this->assertEquals('Malocher', $userNameChangedEvent->getPayload()['newName']);
         
         //Pending events should be reset after requesting them
-        $this->assertEquals(0, count($this->eventSourcedObject->getPendingEvents()));
+        $this->assertEquals(0, count($decorator->getPendingEvents()));
     }
 
     public function testRegisterHandlers()
@@ -89,21 +93,32 @@ class EventSourcedObjectTest extends TestCase
         
         $historyEvents[] = $userEmailChangedEvent;
         
-        $mockUser = new User(1, $historyEvents);
+        $decorator = new ProtectedAccessDecorator();
+        $decorator->constructManagedObjectFromHistory(
+            'Malocher\EventStoreTest\Coverage\Mock\User', 
+            '1', 
+            $historyEvents
+        );
+        
+        $mockUser = $decorator->getManagedObject();
         
         $this->assertEquals(2, $mockUser->getSourceVersion());
         $this->assertEquals('Malocher', $mockUser->getName());
         $this->assertEquals('my.mail@getmalocher.org', $mockUser->getEmail());
         
         //history events must not be treated as events that have to be stored
-        $this->assertEquals(0, count($mockUser->getPendingEvents()));
+        $this->assertEquals(0, count($decorator->getPendingEvents()));
     }
     
     public function testGetAndSetSnapshot()
     {
         $this->eventSourcedObject->changeName('Malocher');
         $this->eventSourcedObject->changeEmail('my.mail@getmalocher.org');
-        $snapshotEvent = $this->eventSourcedObject->getSnapshot();
+        
+        $decorator = new ProtectedAccessDecorator();
+        $decorator->manageObject($this->eventSourcedObject);
+        
+        $snapshotEvent = $decorator->getSnapshot();
         
         $this->assertEquals(
             $this->eventSourcedObject->getSourceVersion(), 
@@ -124,7 +139,14 @@ class EventSourcedObjectTest extends TestCase
         
         $history = array($snapshotEvent);
         
-        $mockUser = new User(1, $history);
+        $decorator = new ProtectedAccessDecorator();
+        $decorator->constructManagedObjectFromHistory(
+            'Malocher\EventStoreTest\Coverage\Mock\User', 
+            '1', 
+            $history
+        );
+        
+        $mockUser = $decorator->getManagedObject();
         
         $this->assertEquals(
             $this->eventSourcedObject->getSourceVersion(), 

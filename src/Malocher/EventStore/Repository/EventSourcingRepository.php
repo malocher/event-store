@@ -9,7 +9,7 @@
 namespace Malocher\EventStore\Repository;
 
 use Malocher\EventStore\EventStore;
-use Malocher\EventStore\EventSourcing\EventSourcedInterface;
+use Malocher\EventStore\EventSourcing\EventSourcedObject;
 /**
  *  EventSourcingRepository
  * 
@@ -53,7 +53,7 @@ class EventSourcingRepository implements RepositoryInterface
     /**
      * {@inheritDoc}     
      */
-    public function save(EventSourcedInterface $eventSourcedObject)
+    public function save(EventSourcedObject $eventSourcedObject)
     {
         $this->eventStore->save($eventSourcedObject);
     }

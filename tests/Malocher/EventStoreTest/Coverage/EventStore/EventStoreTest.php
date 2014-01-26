@@ -9,7 +9,6 @@
 namespace Malocher\EventStoreTest\Coverage\EventStore;
 
 use Malocher\EventStore\Configuration\Configuration;
-use Malocher\EventStore\EventSourcing\EventSourcedObjectFactory;
 use Malocher\EventStore\EventStore;
 use Malocher\EventStore\StoreEvent\PostPersistEvent;
 use Malocher\EventStore\StoreEvent\PreCommitEvent;
@@ -77,8 +76,7 @@ class EventStoreTest extends TestCase
     
     public function testIdentityMap()
     {
-        $factory = new EventSourcedObjectFactory();
-        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        $user = new User('1');
         
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');
@@ -132,8 +130,7 @@ class EventStoreTest extends TestCase
     
     public function testDispatchPostPersistEvent()
     {
-        $factory = new EventSourcedObjectFactory();
-        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        $user = new User('1');
         
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');
@@ -163,8 +160,7 @@ class EventStoreTest extends TestCase
     {
         $this->eventStore->beginTransaction();
         
-        $factory = new EventSourcedObjectFactory();
-        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        $user = new User('1');
         
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');
@@ -196,8 +192,7 @@ class EventStoreTest extends TestCase
     {
         $this->eventStore->beginTransaction();
         
-        $factory = new EventSourcedObjectFactory();
-        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        $user = new User('1');
         
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');
@@ -224,8 +219,7 @@ class EventStoreTest extends TestCase
     {
         $this->eventStore->beginTransaction();
         
-        $factory = new EventSourcedObjectFactory();
-        $user = $factory->create('Malocher\EventStoreTest\Coverage\Mock\User', '1');
+        $user = new User('1');
         
         $user->changeName('Malocher');
         $user->changeEmail('my.email@getmalocher.org');

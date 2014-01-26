@@ -21,6 +21,27 @@ class User extends EventSourcedObject
     
     protected $email;
     
+    public function __construct($id)
+    {
+        $this->setId($id);
+        
+        $this->registerHandlers();
+    }
+    
+    /**
+     * @return void
+     */
+    public function registerHandlers()
+    {
+        $this->handlers['UserNameChangedEvent'] = 'onNameChanged';
+        $this->handlers['UserEmailChangedEvent'] = 'onEmailChanged';
+    }
+    
+    public function getId()
+    {
+        return parent::getId();
+    }
+    
     public function getName()
     {
         return $this->name;
@@ -48,12 +69,6 @@ class User extends EventSourcedObject
     public function getSourceVersion()
     {
         return $this->version;
-    }
-    
-    protected function registerHandlers() 
-    {
-        $this->handlers['UserNameChangedEvent'] = 'onNameChanged';
-        $this->handlers['UserEmailChangedEvent'] = 'onEmailChanged';
     }
     
     protected function onNameChanged(Event\UserNameChangedEvent $e)

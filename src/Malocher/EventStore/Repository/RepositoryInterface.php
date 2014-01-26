@@ -8,7 +8,7 @@
  */
 namespace Malocher\EventStore\Repository;
 
-use Malocher\EventStore\EventSourcing\EventSourcedInterface;
+use Malocher\EventStore\EventSourcing\EventSourcedObject;
 use Malocher\EventStore\EventStore;
 /**
  * RepositoryInterface
@@ -31,14 +31,14 @@ interface RepositoryInterface
      * 
      * @param string $sourceId
      * 
-     * @return EventSourcedInterface|null
+     * @return EventSourcedObject|null
      */
     public function find($sourceId);
     
     /**
      * Save an EventSourcedObject
      * 
-     * @param EventSourcedInterface $eventSourcedObject
+     * @param EventSourcedObject $eventSourcedObject
      */
-    public function save(EventSourcedInterface $eventSourcedObject);
+    public function save(EventSourcedObject $eventSourcedObject);
 }
