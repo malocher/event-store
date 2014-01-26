@@ -47,11 +47,7 @@ abstract class EventSourcedObject
     protected $pendingEvents = array();    
     
     /**
-     * Hookpoint to register event handlers
-     * 
-     * Method is called during construct
-     * 
-     * @throws EventSourcingException
+     * Register internal event handler methods
      */
     abstract protected function registerHandlers();
 
@@ -143,6 +139,8 @@ abstract class EventSourcedObject
      * Update source with new event
      * 
      * @param EventInterface $e
+     * 
+     * @throws EventSourcingException
      */
     protected function update(EventInterface $e)
     {
